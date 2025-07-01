@@ -7,6 +7,7 @@ import org.example.MiniJavaAntlr.MiniJavaLexer;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 import org.example.MiniJavaAntlrImp.AttributeContainer;
 import org.example.MiniJavaAntlrImp.MiniJavaCompiler;
+import org.example.MiniJavaAntlrImp.MiniJavaDeclarationsCompiler;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -20,18 +21,13 @@ public class Main{
     }
 }
 
-public class Animal{
-    int id;
+class Animal{
+    int x;
 }
 
-public class Dog extends Animal{
-    public Dog(int id){
-        this.id = id;
-    }
-
-    public int getId(){
-        return this.id;
-    }
+class Dog{
+    int x;
+    Animal animal;
 }""";
 
         ANTLRInputStream input = new ANTLRInputStream(program);
@@ -40,9 +36,9 @@ public class Dog extends Animal{
         MiniJavaParser parser = new MiniJavaParser(tokens);
 
         ParseTree tree = parser.program();
-        MiniJavaCompiler visitor = new MiniJavaCompiler();
+        MiniJavaDeclarationsCompiler visitor = new MiniJavaDeclarationsCompiler();
         AttributeContainer container = visitor.visit(tree);
-
+        System.out.println(container.getCode());
     }
 
 

@@ -4,10 +4,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Environment {
     private final Environment parent;
     private final Map<String, Symbol> table;
+
+    public Environment(){
+        this.table = new TreeMap<>();
+        this.parent = null;
+    }
 
     public Environment(Map<String, Symbol> table){
         this.table = table;
@@ -15,7 +21,7 @@ public class Environment {
     }
 
     public Environment(Environment parent){
-        this.table = new HashMap<>();
+        this.table = new TreeMap<>();
         this.parent = parent;
     }
 
@@ -24,7 +30,7 @@ public class Environment {
         this.table = table;
     }
 
-    public void putSymbol(Symbol symbol) throws Exception {
+    public void putSymbol(Symbol symbol){
         this.table.put(symbol.getName(), symbol);
     }
 
