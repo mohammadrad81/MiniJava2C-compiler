@@ -3,14 +3,16 @@ package org.example.MiniJavaAntlrImp;
 import org.example.MiniJavaAntlr.MiniJavaBaseVisitor;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 
-import javax.management.Attribute;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
-public class MiniJavaDeclarationsCompiler extends MiniJavaBaseVisitor<AttributeContainer> {
-    private final Map<String, Environment> classEnvironments = new HashMap<>();
-    private final ErrorHandler errorHandler = new ErrorHandler();
+public class MiniJavaDeclarationsVisitor extends MiniJavaBaseVisitor<AttributeContainer> {
+    private Map<String, Environment> classEnvironments = new HashMap<>();
+    private ErrorHandler errorHandler = new ErrorHandler();
+
+    public void setClassEnvironments(Map<String, Environment> classEnvironments) {
+        this.classEnvironments = classEnvironments;
+    }
 
     private String currentClass;
     private Environment currentEnvironment;
@@ -62,17 +64,17 @@ struct int_array* new_int_array(int size){
                             + classDeclarationAttributeContainer.getStructDefinitionCode()
             );
             result.appendToConstructorCodes(
-                    "\n"
-                            + classDeclarationAttributeContainer.getConstructorsCode()
+//                    "\n"
+                            classDeclarationAttributeContainer.getConstructorsCode()
             );
             result.appendToMethodsCode(
-                    "\n"
-                            + classDeclarationAttributeContainer.getMethodsCode()
+//                    "\n"
+                            classDeclarationAttributeContainer.getMethodsCode()
             );
         }
         result.appendToCode(
-                "\n"
-                        + result.getStructDefinitionCode()
+//                "\n"
+                        result.getStructDefinitionCode()
                         + result.getConstructorsCode()
                         + result.getMethodsCode()
         );
@@ -82,9 +84,6 @@ struct int_array* new_int_array(int size){
     @Override
     public AttributeContainer visitClassDeclar(MiniJavaParser.ClassDeclarContext ctx) {
         AttributeContainer result = new AttributeContainer();
-        if(classEnvironments.containsKey(ctx.className.getText())){
-            errorHandler.error(ctx.className, "duplicate class declaration: " + ctx.className.getText());
-        }
         if(
                 ctx.superClass != null &&
                 !classEnvironments.containsKey(ctx.superClass.getText())
@@ -92,32 +91,36 @@ struct int_array* new_int_array(int size){
             errorHandler.error(ctx.superClass, "super class not defined: " + ctx.superClass.getText());
         }
 
+        Environment parent = null;
+
+        String superFieldText = "";
+
+        if(ctx.superClass != null){
+            superFieldText = "\nstruct " + ctx.superClass.getText() + " super;";
+        }
+        currentClass = ctx.className.getText();
+        Environment currentClassEnvironment = classEnvironments.get(currentClass);
+        currentEnvironment = currentClassEnvironment;
+        classEnvironments.put(ctx.className.getText(), currentClassEnvironment);
+
         result.setStructDefinitionCode(
                 "struct "
                         + ctx.className.getText()
-                        + "{\n"
+                        +"{"
+                        + superFieldText
+                        + "\n\n//fields"
         );
-
-        Environment parent = null;
-
-        if(ctx.superClass != null){
-            parent = this.classEnvironments.get(ctx.superClass.getText());
-        }
-        Environment currentClassEnvironment = new Environment(parent);
-        currentClass = ctx.className.getText();
-        currentEnvironment = currentClassEnvironment;
-
         AttributeContainer classBodyAttributeContainer = visit(ctx.classBody());
         result.appendToStructDefinitionCode(
                 classBodyAttributeContainer.getStructDefinitionCode()
-                +"\n}\n"
+                +"}\n"
         );
         result.setMethodsCode(
                 classBodyAttributeContainer.getMethodsCode()
         );
 
         result.setConstructorsCode(
-                classBodyAttributeContainer.getMethodsCode()
+                classBodyAttributeContainer.getConstructorsCode()
         );
         return result;
     }
@@ -132,7 +135,7 @@ struct int_array* new_int_array(int size){
                     + fieldAttributeContainer.getStructDefinitionCode()
             );
         }
-        result.appendToStructDefinitionCode("\n");
+        result.appendToStructDefinitionCode("\n\n//methods");
         for(MiniJavaParser.MethodDeclarationContext methodDeclarationContext: ctx.methodDeclaration()){
             AttributeContainer methodAttributeContainer = visit(methodDeclarationContext);
             result.appendToStructDefinitionCode(
@@ -144,6 +147,7 @@ struct int_array* new_int_array(int size){
                     + methodAttributeContainer.getMethodsCode()
             );
         }
+        result.appendToStructDefinitionCode("\n");
         return result;
     }
 
@@ -151,29 +155,16 @@ struct int_array* new_int_array(int size){
     public AttributeContainer visitFieldDeclar(MiniJavaParser.FieldDeclarContext ctx) {
         AttributeContainer result = new AttributeContainer();
         AttributeContainer typeAttributes = visit(ctx.type());
-        String type = typeAttributes.getType();
-        String codeType = null;
+        String type = typeAttributes.getJavaType();
         currentEnvironment.putSymbol(
                 new Symbol(
                         ctx.fieldName.getText(),
-                        "feature",
+                        "field",
                         type
                 )
         );
-        if(type.equals("boolean")){
-            codeType = "bool";
-        }
-        else if(type.equals("int")){
-            codeType = "int";
-        }
-        else if(type.equals("int[]")){
-            codeType = "struct int_array*";
-        }
-        else { // ID
-            codeType = "struct " + type + "*";
-        }
         result.appendToStructDefinitionCode(
-                codeType
+                typeAttributes.getcType()
                 + " "
                 + ctx.fieldName.getText()
                 + ";"
@@ -182,33 +173,98 @@ struct int_array* new_int_array(int size){
     }
 
     @Override
+    public AttributeContainer visitMethodDeclar(MiniJavaParser.MethodDeclarContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        String returnTypeCode = "void";
+        if(ctx.type() != null){
+            AttributeContainer returnTypeAttributeContainer = visit(ctx.type());
+            returnTypeCode = returnTypeAttributeContainer.getcType();
+        }
+        AttributeContainer parameterListAttributeContainer = visit(ctx.parameterList());
+        StringBuilder structCode = new StringBuilder(returnTypeCode
+                + " (*"
+                + "function_"
+                + ctx.ID().getText()
+                + ")(void*");
+
+        StringBuilder methodCode = new StringBuilder(returnTypeCode
+                + " "
+                + currentClass
+                + "_function_"
+                + ctx.ID().getText()
+                + "(void*");
+        int parameterListSize = parameterListAttributeContainer.getcTypeList().size();
+        for(int i = 0; i < parameterListSize; i++){
+            String parameterType = parameterListAttributeContainer.getcTypeList().get(i);
+            structCode.append(", ");
+            methodCode.append(", ");
+            structCode.append(parameterType);
+            methodCode.append(parameterType);
+        }
+        structCode.append(");");
+        methodCode.append(");");
+        result.setStructDefinitionCode(structCode.toString());
+        result.setMethodsCode(methodCode.toString());
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitParameterDeclar(MiniJavaParser.ParameterDeclarContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer typeAttributeContainer = visit(ctx.type());
+        result.setAddress(ctx.ID().getText());
+        result.setJavaType(typeAttributeContainer.getJavaType());
+        result.setcType(typeAttributeContainer.getcType());
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitParameterListDeclar(MiniJavaParser.ParameterListDeclarContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        for(MiniJavaParser.ParameterContext parameterContext: ctx.parameter()){
+            AttributeContainer parameterAttributeContainer = visit(parameterContext);
+            result.getJavaTypeList().add(parameterAttributeContainer.getJavaType());
+            result.getcTypeList().add(parameterAttributeContainer.getcType());
+        }
+        return result;
+    }
+
+    @Override
     public AttributeContainer visitBooleanType(MiniJavaParser.BooleanTypeContext ctx) {
         AttributeContainer result = new AttributeContainer();
-        result.setType("boolean");
+        result.setJavaType("boolean");
+        result.setcType("bool");
         return result;
     }
 
     @Override
     public AttributeContainer visitIntType(MiniJavaParser.IntTypeContext ctx) {
         AttributeContainer result = new AttributeContainer();
-        result.setType("int");
+        result.setJavaType("int");
+        result.setcType("int");
         return result;
     }
 
     @Override
     public AttributeContainer visitIntArrayType(MiniJavaParser.IntArrayTypeContext ctx) {
         AttributeContainer result = new AttributeContainer();
-        result.setType("int[]");
+        result.setJavaType("int[]");
+        result.setcType("struct int_array*");
         return result;
     }
 
     @Override
     public AttributeContainer visitIdentifierType(MiniJavaParser.IdentifierTypeContext ctx) {
         if(!classEnvironments.containsKey(ctx.ID().getText())){
-            errorHandler.error(ctx.ID().getSymbol(), "class " + ctx.ID().getText() + "is not defined");
+            errorHandler.error(ctx.ID().getSymbol(), "class " + ctx.ID().getText() + " is not defined");
         }
         AttributeContainer result = new AttributeContainer();
-        result.setType(ctx.ID().getText());
+        result.setJavaType(ctx.ID().getText());
+        result.setcType(
+                "struct "
+                + ctx.ID().getText()
+                + "*"
+        );
         return result;
     }
 

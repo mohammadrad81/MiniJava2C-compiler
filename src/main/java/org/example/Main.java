@@ -5,9 +5,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.example.MiniJavaAntlr.MiniJavaLexer;
 import org.example.MiniJavaAntlr.MiniJavaParser;
-import org.example.MiniJavaAntlrImp.AttributeContainer;
-import org.example.MiniJavaAntlrImp.MiniJavaCompiler;
-import org.example.MiniJavaAntlrImp.MiniJavaDeclarationsCompiler;
+import org.example.MiniJavaAntlrImp.*;
+
+import java.util.Map;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -23,11 +23,18 @@ public class Main{
 
 class Animal{
     int x;
+    int[] y;
+    public void sing(){
+        System.out.println(1);
+    }
 }
 
-class Dog{
+class Dog extends Animal{
     int x;
     Animal animal;
+    public Animal sayHello(int t){
+        return this.animal;
+    }
 }""";
 
         ANTLRInputStream input = new ANTLRInputStream(program);
@@ -36,9 +43,19 @@ class Dog{
         MiniJavaParser parser = new MiniJavaParser(tokens);
 
         ParseTree tree = parser.program();
-        MiniJavaDeclarationsCompiler visitor = new MiniJavaDeclarationsCompiler();
-        AttributeContainer container = visitor.visit(tree);
+
+        MiniJavaClassEnvironmentVisitor classEnvironmentVisitor = new MiniJavaClassEnvironmentVisitor();
+        classEnvironmentVisitor.visit(tree);
+        if(classEnvironmentVisitor.getErrorHandler().hasErrors()){
+            System.exit(-1);
+        }
+        Map<String, Environment> classEnvironments = classEnvironmentVisitor.getClassEnvironments();
+        MiniJavaDeclarationsVisitor declarationVisitor = new MiniJavaDeclarationsVisitor();
+        declarationVisitor.setClassEnvironments(classEnvironments);
+        AttributeContainer container = declarationVisitor.visit(tree);
         System.out.println(container.getCode());
+
+
     }
 
 

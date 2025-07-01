@@ -17,6 +17,11 @@ public class ErrorHandler {
         error(ctx.getStart(), message);
     }
 
+    public void error(String message){
+        System.err.println(message);
+        hasErrors = true;
+    }
+
     public boolean hasErrors() {
         return hasErrors;
     }

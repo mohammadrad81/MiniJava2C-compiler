@@ -7,8 +7,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Environment {
-    private final Environment parent;
+    private Environment parent;
     private final Map<String, Symbol> table;
+
+    public void setParent(Environment parent) {
+        this.parent = parent;
+    }
 
     public Environment(){
         this.table = new TreeMap<>();

@@ -1,5 +1,6 @@
 package org.example.MiniJavaAntlrImp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttributeContainer {
@@ -8,7 +9,10 @@ public class AttributeContainer {
     private String constructorsCode = "";
     private String methodsCode = "";
     private String address = "";
-    private String type = "";
+    private String javaType = "";
+    private String cType = "";
+    private List<String> cTypeList = new ArrayList<>();
+    private List<String> javaTypeList = new ArrayList<>();
 
     public static AttributeContainer appendCodes(List<AttributeContainer> attributeContainers){
 
@@ -22,12 +26,12 @@ public class AttributeContainer {
         return result;
     }
 
-    public String getType() {
-        return type;
+    public String getJavaType() {
+        return javaType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setJavaType(String javaType) {
+        this.javaType = javaType;
     }
 
     public String getAddress() {
@@ -84,5 +88,29 @@ public class AttributeContainer {
 
     public void appendToMethodsCode(String text){
         this.methodsCode += text;
+    }
+
+    public List<String> getcTypeList() {
+        return cTypeList;
+    }
+
+    public void setcTypeList(List<String> cTypeList) {
+        this.cTypeList = cTypeList;
+    }
+
+    public String getcType() {
+        return cType;
+    }
+
+    public void setcType(String cType) {
+        this.cType = cType;
+    }
+
+    public List<String> getJavaTypeList() {
+        return javaTypeList;
+    }
+
+    public void setJavaTypeList(List<String> javaTypeList) {
+        this.javaTypeList = javaTypeList;
     }
 }
