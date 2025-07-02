@@ -36,7 +36,10 @@ public class MiniJavaClassEnvironmentVisitor extends MiniJavaBaseVisitor<Void> {
 
         else{
             for(String node: hierarchy.getNodes()){
-                classEnvironments.put(node, new Environment(new TreeMap<>()));
+                Environment environment = new Environment();
+                environment.setClassEnvironment(true);
+                environment.setClassName(node);
+                classEnvironments.put(node, environment);
             }
             for(String source: hierarchy.getExtensions().keySet()){
                 String destination = hierarchy.getExtensions().get(source);

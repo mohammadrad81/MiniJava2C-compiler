@@ -64,16 +64,13 @@ struct int_array* new_int_array(int size){
                             + classDeclarationAttributeContainer.getStructDefinitionCode()
             );
             result.appendToConstructorCodes(
-//                    "\n"
                             classDeclarationAttributeContainer.getConstructorsCode()
             );
             result.appendToMethodsCode(
-//                    "\n"
                             classDeclarationAttributeContainer.getMethodsCode()
             );
         }
         result.appendToCode(
-//                "\n"
                         result.getStructDefinitionCode()
                         + result.getConstructorsCode()
                         + result.getMethodsCode()
@@ -148,6 +145,13 @@ struct int_array* new_int_array(int size){
             );
         }
         result.appendToStructDefinitionCode("\n");
+        result.appendToConstructorCodes(
+                "\nstruct "
+                        + currentClass
+                        + "* new_"
+                        + currentClass
+                        + "();"
+        );
         return result;
     }
 
@@ -155,12 +159,14 @@ struct int_array* new_int_array(int size){
     public AttributeContainer visitFieldDeclar(MiniJavaParser.FieldDeclarContext ctx) {
         AttributeContainer result = new AttributeContainer();
         AttributeContainer typeAttributes = visit(ctx.type());
-        String type = typeAttributes.getJavaType();
+        String javaType = typeAttributes.getJavaType();
+        String cType = typeAttributes.getcType();
         currentEnvironment.putSymbol(
                 new Symbol(
                         ctx.fieldName.getText(),
                         "field",
-                        type
+                        javaType,
+                        cType
                 )
         );
         result.appendToStructDefinitionCode(
@@ -175,24 +181,34 @@ struct int_array* new_int_array(int size){
     @Override
     public AttributeContainer visitMethodDeclar(MiniJavaParser.MethodDeclarContext ctx) {
         AttributeContainer result = new AttributeContainer();
-        String returnTypeCode = "void";
+        String returnCType = "void";
+        String returnJavaType = "void";
         if(ctx.type() != null){
             AttributeContainer returnTypeAttributeContainer = visit(ctx.type());
-            returnTypeCode = returnTypeAttributeContainer.getcType();
+            returnCType = returnTypeAttributeContainer.getcType();
+            returnJavaType = returnTypeAttributeContainer.getJavaType();
         }
         AttributeContainer parameterListAttributeContainer = visit(ctx.parameterList());
-        StringBuilder structCode = new StringBuilder(returnTypeCode
+        StringBuilder structCode = new StringBuilder(returnCType
                 + " (*"
                 + "function_"
-                + ctx.ID().getText()
+                + ctx.methodName.getText()
                 + ")(void*");
 
-        StringBuilder methodCode = new StringBuilder(returnTypeCode
+        StringBuilder methodCode = new StringBuilder(returnCType
                 + " "
                 + currentClass
                 + "_function_"
-                + ctx.ID().getText()
+                + ctx.methodName.getText()
                 + "(void*");
+        MethodSymbol methodSymbol = new MethodSymbol(
+                ctx.methodName.getText(),
+                "method",
+                returnJavaType,
+                returnCType,
+                parameterListAttributeContainer.getJavaTypeList()
+        );
+        currentEnvironment.putMethodSymbol(methodSymbol);
         int parameterListSize = parameterListAttributeContainer.getcTypeList().size();
         for(int i = 0; i < parameterListSize; i++){
             String parameterType = parameterListAttributeContainer.getcTypeList().get(i);
@@ -223,6 +239,7 @@ struct int_array* new_int_array(int size){
         AttributeContainer result = new AttributeContainer();
         for(MiniJavaParser.ParameterContext parameterContext: ctx.parameter()){
             AttributeContainer parameterAttributeContainer = visit(parameterContext);
+            result.getParameterList().add(parameterAttributeContainer.getAddress());
             result.getJavaTypeList().add(parameterAttributeContainer.getJavaType());
             result.getcTypeList().add(parameterAttributeContainer.getcType());
         }
@@ -267,6 +284,4 @@ struct int_array* new_int_array(int size){
         );
         return result;
     }
-
-
 }

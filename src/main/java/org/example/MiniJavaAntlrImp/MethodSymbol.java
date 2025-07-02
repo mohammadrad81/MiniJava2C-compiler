@@ -9,9 +9,10 @@ public class MethodSymbol extends Symbol{
 
     public MethodSymbol(String name,
                         String kind,
-                        String type,
+                        String javaType,
+                        String cType,
                         List<String> parametersTypes) {
-        super(name, kind, type);
+        super(name, kind, javaType, cType);
         this.parametersTypes = parametersTypes;
     }
 

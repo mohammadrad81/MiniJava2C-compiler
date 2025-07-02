@@ -5,6 +5,7 @@ import java.util.List;
 
 public class AttributeContainer {
     private String code = "";
+    private String mainCode = "";
     private String structDefinitionCode = "";
     private String constructorsCode = "";
     private String methodsCode = "";
@@ -13,6 +14,8 @@ public class AttributeContainer {
     private String cType = "";
     private List<String> cTypeList = new ArrayList<>();
     private List<String> javaTypeList = new ArrayList<>();
+    private List<String> argumentList = new ArrayList<>();
+    private List<String> parameterList = new ArrayList<>();
 
     public static AttributeContainer appendCodes(List<AttributeContainer> attributeContainers){
 
@@ -78,16 +81,32 @@ public class AttributeContainer {
         this.code += text;
     }
 
+    public void insertAtFirstOfCode(String text){
+        this.code = text + this.code;
+    }
+
     public void appendToStructDefinitionCode(String text){
         this.structDefinitionCode += text;
+    }
+
+    public void insertAtFirstOfStructDefinitionCode(String text){
+        this.structDefinitionCode = text + this.structDefinitionCode;
     }
 
     public void appendToConstructorCodes(String text){
         this.constructorsCode += text;
     }
 
+    public void insertAtFirstOfConstructorCode(String text){
+        this.constructorsCode = text + this.constructorsCode;
+    }
+
     public void appendToMethodsCode(String text){
         this.methodsCode += text;
+    }
+
+    public void insertAtFirstOfMethodsCode(String text){
+        this.methodsCode = text + this.methodsCode;
     }
 
     public List<String> getcTypeList() {
@@ -112,5 +131,29 @@ public class AttributeContainer {
 
     public void setJavaTypeList(List<String> javaTypeList) {
         this.javaTypeList = javaTypeList;
+    }
+
+    public String getMainCode() {
+        return mainCode;
+    }
+
+    public void setMainCode(String mainCode) {
+        this.mainCode = mainCode;
+    }
+
+    public List<String> getArgumentList() {
+        return argumentList;
+    }
+
+    public void setArgumentList(List<String> argumentList) {
+        this.argumentList = argumentList;
+    }
+
+    public List<String> getParameterList() {
+        return parameterList;
+    }
+
+    public void setParameterList(List<String> parameterList) {
+        this.parameterList = parameterList;
     }
 }

@@ -1,14 +1,21 @@
 package org.example.MiniJavaAntlrImp;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Environment {
+    private boolean isClassEnvironment = false;
+    private String className = "";
     private Environment parent;
     private final Map<String, Symbol> table;
+
+    public Environment getParent() {
+        return parent;
+    }
+
+    public Map<String, Symbol> getTable() {
+        return table;
+    }
 
     public void setParent(Environment parent) {
         this.parent = parent;
@@ -58,5 +65,35 @@ public class Environment {
             }
         }
         return null;
+    }
+
+    public List<Integer> overridingSuperIndices(MethodSymbol methodSymbol){
+        List<Integer> result = new ArrayList<>();
+        Environment environment = this.parent;
+        for(int counter = 1; environment != null; environment = environment.parent){
+            if(environment.isClassEnvironment()){
+                counter++;
+                if(environment.containsMethodSignature(methodSymbol.getSignature())){
+                    result.add(counter);
+                }
+            }
+        }
+        return result;
+    }
+
+    public boolean isClassEnvironment() {
+        return isClassEnvironment;
+    }
+
+    public void setClassEnvironment(boolean classEnvironment) {
+        isClassEnvironment = classEnvironment;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

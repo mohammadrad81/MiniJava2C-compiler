@@ -5,12 +5,14 @@ import java.util.Objects;
 public class Symbol {
     private String name;
     private String kind;
-    private String type;
+    private String javaType;
+    private String cType;
 
-    public Symbol(String name, String kind, String type) {
+    public Symbol(String name, String kind, String javaType, String cType) {
         this.name = name;
         this.kind = kind;
-        this.type = type;
+        this.javaType = javaType;
+        this.cType = cType;
     }
 
     public String getName() {
@@ -21,12 +23,12 @@ public class Symbol {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getJavaType() {
+        return javaType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setJavaType(String javaType) {
+        this.javaType = javaType;
     }
 
     public String getKind() {
@@ -47,5 +49,13 @@ public class Symbol {
     @Override
     public int hashCode() {
         return Objects.hashCode(name);
+    }
+
+    public String getcType() {
+        return cType;
+    }
+
+    public void setcType(String cType) {
+        this.cType = cType;
     }
 }
