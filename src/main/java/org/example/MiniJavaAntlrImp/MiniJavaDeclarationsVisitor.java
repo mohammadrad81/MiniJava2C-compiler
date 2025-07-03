@@ -221,6 +221,7 @@ struct int_array* new_int_array(int size){
         methodCode.append(");");
         result.setStructDefinitionCode(structCode.toString());
         result.setMethodsCode(methodCode.toString());
+
         return result;
     }
 
@@ -250,7 +251,7 @@ struct int_array* new_int_array(int size){
     public AttributeContainer visitBooleanType(MiniJavaParser.BooleanTypeContext ctx) {
         AttributeContainer result = new AttributeContainer();
         result.setJavaType("boolean");
-        result.setcType("bool");
+        result.setcType(MiniJavaToCTypeConvertor.convert("boolean"));
         return result;
     }
 
@@ -258,7 +259,7 @@ struct int_array* new_int_array(int size){
     public AttributeContainer visitIntType(MiniJavaParser.IntTypeContext ctx) {
         AttributeContainer result = new AttributeContainer();
         result.setJavaType("int");
-        result.setcType("int");
+        result.setcType(MiniJavaToCTypeConvertor.convert("int"));
         return result;
     }
 
@@ -266,7 +267,7 @@ struct int_array* new_int_array(int size){
     public AttributeContainer visitIntArrayType(MiniJavaParser.IntArrayTypeContext ctx) {
         AttributeContainer result = new AttributeContainer();
         result.setJavaType("int[]");
-        result.setcType("struct int_array*");
+        result.setcType(MiniJavaToCTypeConvertor.convert("int[]"));
         return result;
     }
 
@@ -277,11 +278,7 @@ struct int_array* new_int_array(int size){
         }
         AttributeContainer result = new AttributeContainer();
         result.setJavaType(ctx.ID().getText());
-        result.setcType(
-                "struct "
-                + ctx.ID().getText()
-                + "*"
-        );
+        result.setcType(MiniJavaToCTypeConvertor.convert(ctx.ID().getText()));
         return result;
     }
 }

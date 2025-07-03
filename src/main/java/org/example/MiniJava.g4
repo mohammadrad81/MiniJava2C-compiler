@@ -55,48 +55,108 @@ statement
     | 'continue' ';'                                                        # ContinueStatement
     | 'return' ';'                                                          # ReturnNothingStatement
     | 'return' expression ';'                                               # ReturnExpressionStatement
-    | ID '=' expression ';'                                                 # AssignmentStatement
-    | expression '.' ID '=' expression ';'                                  # FieldAssignmentStatement
-    | expression '[' expression ']' '=' expression ';'                      # ArrayAssignmentStatement
+    | varDeclar ';'                                                         # VariableDeclarationStatement
+    | varDeclarAssign ';'                                                   # VariableDeclarationWithAssignmentStatement
+    | assign ';'                                                            # VariableAssignmentStatement
+    | fieldAssign ';'                                                       # FieldAssignmentStatement
+    | arrayMemberAssign ';'                                                 # ArrayMemberAssignmentStatement
+    | variableMulDivModAddSubAssign ';'                                     # VariableMulDivModAddSubAssignmentStatement
+    | fieldMulDivModAddSubAssign ';'                                        # FieldMulDivModAddSubAssignmentStatement
+    | arrayMemberMulDivModAddSubAssign ';'                                  # ArrayMemberMulDivModAddSubAssignmentStatement
     | expression ';'                                                        # ExpressionStatement
-    | type ID ';'                                                           # VariableDeclarationStatement
-    | type ID '=' expression ';'                                            # VariableDeclarationWithAssignmentStatement
     | 'System' '.' 'out' '.' 'println' '(' expression ')' ';'               # PrintStatement
     ;
 
+varDeclar
+    : type ID                                                               # VariableDeclaration
+    ;
+
+varDeclarAssign
+    : type ID '=' expression                                                # VariableDeclarationAssignment
+    ;
+
+assign
+    : ID '=' expression                                                     # Assignment
+    ;
+
+variableMulDivModAddSubAssign
+    : ID op=('*' | '/' | '%' | '+' | '-')'=' expression                     # VariableMulDivModAddAssignment
+    ;
+
+
+fieldAssign
+    : expression '.' ID '=' expression ';'                                  # FieldAssignment
+    ;
+
+fieldMulDivModAddSubAssign
+    : expression '.' ID op=('*' | '/' | '%' | '+' | '-')'=' expression      # FieldMulDivModAddSubAssignment
+    ;
+
+arrayMemberAssign
+    : expression '[' expression ']' '=' expression                          # ArrayMemberAssignment
+    ;
+
+arrayMemberMulDivModAddSubAssign
+    : expression '[' expression ']' op=('*' | '/' | '%' | '+' | '-')'=' expression # ArrayMemberMulDivModAddSubAssignment
+    ;
+
+
+
+
 forInit
-    : type ID '=' expression                                                # ForInitDeclarationAndAssignment
-    | ID '=' expression                                                     # ForInitAssignment
+    : forInitPart (', ' forUpdatePart)*                                     # ForInitParts
+    ;
+
+forInitPart
+    : varDeclar                                                             # ForInitPartVariableDeclaration
+    | varDeclarAssign                                                       # ForInitPartVariableDeclarationAssignment
+    | assign                                                                # ForInitPartAssignment
+    | variableMulDivModAddSubAssign                                         # ForInitPartVariableMulDivModAddSubAssignment
+    | fieldAssign                                                           # ForInitPartFieldAssignment
+    | fieldMulDivModAddSubAssign                                            # ForInitPartFieldMulDivModAddSubAssignment
+    | arrayMemberAssign                                                     # ForInitPartArrayMemberAssignment
+    | arrayMemberMulDivModAddSubAssign                                      # ForInitPartArrayMemberMulDivModAddSubAssignment
+    | expression                                                            # ForInitPartExpression
     ;
 
 forUpdate
-    : ID '=' expression                                                     # ForUpdateAssignment
-    | ID '++'                                                               # ForUpdateIncrementRight
-    | ID '--'                                                               # ForUpdateReductionRight
-    | '++' ID                                                               # ForUpdateIncrementLeft
-    | '--' ID                                                               # ForUpdateReductionLeft
+    : forUpdatePart (', ' forUpdatePart)*                                   # ForUpdateParts
+    ;
+
+forUpdatePart
+    : assign                                                                # ForUpdatePartAssignment
+    | variableMulDivModAddSubAssign                                         # ForUpdatePartVariableMulDivModAddSubAssignment
+    | fieldAssign                                                           # ForUpdatePartFieldAssignment
+    | fieldMulDivModAddSubAssign                                            # ForUpdatePartFieldMulDivModAddSubAssignment
+    | arrayMemberAssign                                                     # ForUpdatePartArrayMemberAssignment
+    | arrayMemberMulDivModAddSubAssign                                      # ForUpdatePartArrayMemberMulDivModAddSubAssignment
+    | expression                                                            # ForUpdatePartExpression
     ;
 
 expression
     : '(' expression ')'                                         # ParenExpression
     | 'new' 'int' '[' expression ']'                             # NewIntArrayExpression
-    | 'new' ID '(' argumentList ')'                             # NewObjectExpression
+    | 'new' ID '(' ')'                                           # NewObjectExpression
     | expression '[' expression ']'                              # ArrayAccessExpression
     | expression '.' 'length'                                    # ArrayLengthExpression
     | expression '.' ID                                          # FieldExpression
-    | expression '.' ID '(' argumentList ')'                    # MethodCallExpression
+    | expression '.' ID '++'                                     # FieldIncrementExpression
+    | expression '.' ID '--'                                     # FieldDecrementExpression
+    | expression '.' ID '(' argumentList ')'                     # MethodCallExpression
     | '!' expression                                             # NotExpression
-    | '-' expression                                             # UnaryMinusExpression
-    | expression op=('*'|'/'|'%') expression                     # BinaryExpression
-    | expression op=('+'|'-') expression                         # BinaryExpression
-    | expression op=('<'|'<='|'>'|'>='|'=='|'!=') expression     # BinaryExpression
-    | expression op='&&' expression                              # BinaryExpression
-    | expression op='||' expression                              # BinaryExpression
+    | '-' expression                                             # MinusExpression
+    | expression op=('*'|'/'|'%') expression                     # MulDivModExpression
+    | expression op=('+'|'-') expression                         # AddSubExpression
+    | expression op=('<'|'<='|'>'|'>='|'=='|'!=') expression     # CompareExpression
+    | expression op='&&' expression                              # AndExpression
+    | expression op='||' expression                              # OrExpression
     | 'this'                                                     # ThisExpression
-    | ID                                                         # IdentifierExpression
+    | ID                                                         # IdExpression
+    | (ID '++' | '++' ID)                                        # IdIncrementExpression
+    | (ID '--' | '--' ID)                                        # IdDecrementExpression
     | INTEGER                                                    # IntegerExpression
-    | 'true'                                                     # BooleanExpression
-    | 'false'                                                    # BooleanExpression
+    | 'true'                                                     # TrueExpression
+    | 'false'                                                    # FalseExpression
     ;
 
 argumentList

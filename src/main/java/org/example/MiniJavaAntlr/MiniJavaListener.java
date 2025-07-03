@@ -273,54 +273,6 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitReturnExpressionStatement(MiniJavaParser.ReturnExpressionStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code AssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignmentStatement(MiniJavaParser.AssignmentStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code AssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignmentStatement(MiniJavaParser.AssignmentStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code FieldAssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterFieldAssignmentStatement(MiniJavaParser.FieldAssignmentStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code FieldAssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitFieldAssignmentStatement(MiniJavaParser.FieldAssignmentStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ArrayAssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayAssignmentStatement(MiniJavaParser.ArrayAssignmentStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ArrayAssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayAssignmentStatement(MiniJavaParser.ArrayAssignmentStatementContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExpressionStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExpressionStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code VariableDeclarationStatement}
 	 * labeled alternative in {@link MiniJavaParser#statement}.
 	 * @param ctx the parse tree
@@ -345,6 +297,90 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitVariableDeclarationWithAssignmentStatement(MiniJavaParser.VariableDeclarationWithAssignmentStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code VariableAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableAssignmentStatement(MiniJavaParser.VariableAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VariableAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableAssignmentStatement(MiniJavaParser.VariableAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FieldAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldAssignmentStatement(MiniJavaParser.FieldAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FieldAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldAssignmentStatement(MiniJavaParser.FieldAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayMemberAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMemberAssignmentStatement(MiniJavaParser.ArrayMemberAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayMemberAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMemberAssignmentStatement(MiniJavaParser.ArrayMemberAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code VariableMulDivModAddSubAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableMulDivModAddSubAssignmentStatement(MiniJavaParser.VariableMulDivModAddSubAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VariableMulDivModAddSubAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableMulDivModAddSubAssignmentStatement(MiniJavaParser.VariableMulDivModAddSubAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FieldMulDivModAddSubAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldMulDivModAddSubAssignmentStatement(MiniJavaParser.FieldMulDivModAddSubAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FieldMulDivModAddSubAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldMulDivModAddSubAssignmentStatement(MiniJavaParser.FieldMulDivModAddSubAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayMemberMulDivModAddSubAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMemberMulDivModAddSubAssignmentStatement(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayMemberMulDivModAddSubAssignmentStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMemberMulDivModAddSubAssignmentStatement(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExpressionStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExpressionStatement}
+	 * labeled alternative in {@link MiniJavaParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code PrintStatement}
 	 * labeled alternative in {@link MiniJavaParser#statement}.
 	 * @param ctx the parse tree
@@ -357,89 +393,329 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitPrintStatement(MiniJavaParser.PrintStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForInitDeclarationAndAssignment}
+	 * Enter a parse tree produced by the {@code VariableDeclaration}
+	 * labeled alternative in {@link MiniJavaParser#varDeclar}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableDeclaration(MiniJavaParser.VariableDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VariableDeclaration}
+	 * labeled alternative in {@link MiniJavaParser#varDeclar}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableDeclaration(MiniJavaParser.VariableDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code VariableDeclarationAssignment}
+	 * labeled alternative in {@link MiniJavaParser#varDeclarAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableDeclarationAssignment(MiniJavaParser.VariableDeclarationAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VariableDeclarationAssignment}
+	 * labeled alternative in {@link MiniJavaParser#varDeclarAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableDeclarationAssignment(MiniJavaParser.VariableDeclarationAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Assignment}
+	 * labeled alternative in {@link MiniJavaParser#assign}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignment(MiniJavaParser.AssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Assignment}
+	 * labeled alternative in {@link MiniJavaParser#assign}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignment(MiniJavaParser.AssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code VariableMulDivModAddAssignment}
+	 * labeled alternative in {@link MiniJavaParser#variableMulDivModAddSubAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableMulDivModAddAssignment(MiniJavaParser.VariableMulDivModAddAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VariableMulDivModAddAssignment}
+	 * labeled alternative in {@link MiniJavaParser#variableMulDivModAddSubAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableMulDivModAddAssignment(MiniJavaParser.VariableMulDivModAddAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FieldAssignment}
+	 * labeled alternative in {@link MiniJavaParser#fieldAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldAssignment(MiniJavaParser.FieldAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FieldAssignment}
+	 * labeled alternative in {@link MiniJavaParser#fieldAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldAssignment(MiniJavaParser.FieldAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FieldMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#fieldMulDivModAddSubAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldMulDivModAddSubAssignment(MiniJavaParser.FieldMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FieldMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#fieldMulDivModAddSubAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldMulDivModAddSubAssignment(MiniJavaParser.FieldMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayMemberAssignment}
+	 * labeled alternative in {@link MiniJavaParser#arrayMemberAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMemberAssignment(MiniJavaParser.ArrayMemberAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayMemberAssignment}
+	 * labeled alternative in {@link MiniJavaParser#arrayMemberAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMemberAssignment(MiniJavaParser.ArrayMemberAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayMemberMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#arrayMemberMulDivModAddSubAssign}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayMemberMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#arrayMemberMulDivModAddSubAssign}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitParts}
 	 * labeled alternative in {@link MiniJavaParser#forInit}.
 	 * @param ctx the parse tree
 	 */
-	void enterForInitDeclarationAndAssignment(MiniJavaParser.ForInitDeclarationAndAssignmentContext ctx);
+	void enterForInitParts(MiniJavaParser.ForInitPartsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForInitDeclarationAndAssignment}
+	 * Exit a parse tree produced by the {@code ForInitParts}
 	 * labeled alternative in {@link MiniJavaParser#forInit}.
 	 * @param ctx the parse tree
 	 */
-	void exitForInitDeclarationAndAssignment(MiniJavaParser.ForInitDeclarationAndAssignmentContext ctx);
+	void exitForInitParts(MiniJavaParser.ForInitPartsContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForInitAssignment}
-	 * labeled alternative in {@link MiniJavaParser#forInit}.
+	 * Enter a parse tree produced by the {@code ForInitPartVariableDeclaration}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
 	 * @param ctx the parse tree
 	 */
-	void enterForInitAssignment(MiniJavaParser.ForInitAssignmentContext ctx);
+	void enterForInitPartVariableDeclaration(MiniJavaParser.ForInitPartVariableDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForInitAssignment}
-	 * labeled alternative in {@link MiniJavaParser#forInit}.
+	 * Exit a parse tree produced by the {@code ForInitPartVariableDeclaration}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
 	 * @param ctx the parse tree
 	 */
-	void exitForInitAssignment(MiniJavaParser.ForInitAssignmentContext ctx);
+	void exitForInitPartVariableDeclaration(MiniJavaParser.ForInitPartVariableDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForUpdateAssignment}
+	 * Enter a parse tree produced by the {@code ForInitPartVariableDeclarationAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartVariableDeclarationAssignment(MiniJavaParser.ForInitPartVariableDeclarationAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartVariableDeclarationAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartVariableDeclarationAssignment(MiniJavaParser.ForInitPartVariableDeclarationAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartAssignment(MiniJavaParser.ForInitPartAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartAssignment(MiniJavaParser.ForInitPartAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartVariableMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartVariableMulDivModAddSubAssignment(MiniJavaParser.ForInitPartVariableMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartVariableMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartVariableMulDivModAddSubAssignment(MiniJavaParser.ForInitPartVariableMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartFieldAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartFieldAssignment(MiniJavaParser.ForInitPartFieldAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartFieldAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartFieldAssignment(MiniJavaParser.ForInitPartFieldAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartFieldMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartFieldMulDivModAddSubAssignment(MiniJavaParser.ForInitPartFieldMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartFieldMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartFieldMulDivModAddSubAssignment(MiniJavaParser.ForInitPartFieldMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartArrayMemberAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartArrayMemberAssignment(MiniJavaParser.ForInitPartArrayMemberAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartArrayMemberAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartArrayMemberAssignment(MiniJavaParser.ForInitPartArrayMemberAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartArrayMemberMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForInitPartArrayMemberMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartArrayMemberMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForInitPartArrayMemberMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForInitPartExpression}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForInitPartExpression(MiniJavaParser.ForInitPartExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForInitPartExpression}
+	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForInitPartExpression(MiniJavaParser.ForInitPartExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdateParts}
 	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
 	 * @param ctx the parse tree
 	 */
-	void enterForUpdateAssignment(MiniJavaParser.ForUpdateAssignmentContext ctx);
+	void enterForUpdateParts(MiniJavaParser.ForUpdatePartsContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForUpdateAssignment}
+	 * Exit a parse tree produced by the {@code ForUpdateParts}
 	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
 	 * @param ctx the parse tree
 	 */
-	void exitForUpdateAssignment(MiniJavaParser.ForUpdateAssignmentContext ctx);
+	void exitForUpdateParts(MiniJavaParser.ForUpdatePartsContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForUpdateIncrementRight}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Enter a parse tree produced by the {@code ForUpdatePartAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void enterForUpdateIncrementRight(MiniJavaParser.ForUpdateIncrementRightContext ctx);
+	void enterForUpdatePartAssignment(MiniJavaParser.ForUpdatePartAssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForUpdateIncrementRight}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Exit a parse tree produced by the {@code ForUpdatePartAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void exitForUpdateIncrementRight(MiniJavaParser.ForUpdateIncrementRightContext ctx);
+	void exitForUpdatePartAssignment(MiniJavaParser.ForUpdatePartAssignmentContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForUpdateReductionRight}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Enter a parse tree produced by the {@code ForUpdatePartVariableMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void enterForUpdateReductionRight(MiniJavaParser.ForUpdateReductionRightContext ctx);
+	void enterForUpdatePartVariableMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartVariableMulDivModAddSubAssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForUpdateReductionRight}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Exit a parse tree produced by the {@code ForUpdatePartVariableMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void exitForUpdateReductionRight(MiniJavaParser.ForUpdateReductionRightContext ctx);
+	void exitForUpdatePartVariableMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartVariableMulDivModAddSubAssignmentContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForUpdateIncrementLeft}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Enter a parse tree produced by the {@code ForUpdatePartFieldAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void enterForUpdateIncrementLeft(MiniJavaParser.ForUpdateIncrementLeftContext ctx);
+	void enterForUpdatePartFieldAssignment(MiniJavaParser.ForUpdatePartFieldAssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForUpdateIncrementLeft}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Exit a parse tree produced by the {@code ForUpdatePartFieldAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void exitForUpdateIncrementLeft(MiniJavaParser.ForUpdateIncrementLeftContext ctx);
+	void exitForUpdatePartFieldAssignment(MiniJavaParser.ForUpdatePartFieldAssignmentContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ForUpdateReductionLeft}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Enter a parse tree produced by the {@code ForUpdatePartFieldMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void enterForUpdateReductionLeft(MiniJavaParser.ForUpdateReductionLeftContext ctx);
+	void enterForUpdatePartFieldMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartFieldMulDivModAddSubAssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ForUpdateReductionLeft}
-	 * labeled alternative in {@link MiniJavaParser#forUpdate}.
+	 * Exit a parse tree produced by the {@code ForUpdatePartFieldMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
 	 */
-	void exitForUpdateReductionLeft(MiniJavaParser.ForUpdateReductionLeftContext ctx);
+	void exitForUpdatePartFieldMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartFieldMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdatePartArrayMemberAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForUpdatePartArrayMemberAssignment(MiniJavaParser.ForUpdatePartArrayMemberAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForUpdatePartArrayMemberAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForUpdatePartArrayMemberAssignment(MiniJavaParser.ForUpdatePartArrayMemberAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdatePartArrayMemberMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForUpdatePartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartArrayMemberMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForUpdatePartArrayMemberMulDivModAddSubAssignment}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForUpdatePartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartArrayMemberMulDivModAddSubAssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForUpdatePartExpression}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
+	 * @param ctx the parse tree
+	 */
+	void enterForUpdatePartExpression(MiniJavaParser.ForUpdatePartExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForUpdatePartExpression}
+	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
+	 * @param ctx the parse tree
+	 */
+	void exitForUpdatePartExpression(MiniJavaParser.ForUpdatePartExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FieldDecrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldDecrementExpression(MiniJavaParser.FieldDecrementExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FieldDecrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldDecrementExpression(MiniJavaParser.FieldDecrementExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code NotExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -465,6 +741,54 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitIntegerExpression(MiniJavaParser.IntegerExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code FieldIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldIncrementExpression(MiniJavaParser.FieldIncrementExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FieldIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldIncrementExpression(MiniJavaParser.FieldIncrementExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CompareExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompareExpression(MiniJavaParser.CompareExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CompareExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompareExpression(MiniJavaParser.CompareExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code OrExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrExpression(MiniJavaParser.OrExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code OrExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrExpression(MiniJavaParser.OrExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code MulDivModExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMulDivModExpression(MiniJavaParser.MulDivModExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MulDivModExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMulDivModExpression(MiniJavaParser.MulDivModExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code NewObjectExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -476,18 +800,6 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNewObjectExpression(MiniJavaParser.NewObjectExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code IdentifierExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentifierExpression(MiniJavaParser.IdentifierExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IdentifierExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentifierExpression(MiniJavaParser.IdentifierExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FieldExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -501,6 +813,30 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitFieldExpression(MiniJavaParser.FieldExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code IdDecrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdDecrementExpression(MiniJavaParser.IdDecrementExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdDecrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdDecrementExpression(MiniJavaParser.IdDecrementExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AddSubExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddSubExpression(MiniJavaParser.AddSubExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AddSubExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddSubExpression(MiniJavaParser.AddSubExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ThisExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -513,41 +849,29 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitThisExpression(MiniJavaParser.ThisExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code BooleanExpression}
+	 * Enter a parse tree produced by the {@code TrueExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterBooleanExpression(MiniJavaParser.BooleanExpressionContext ctx);
+	void enterTrueExpression(MiniJavaParser.TrueExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code BooleanExpression}
+	 * Exit a parse tree produced by the {@code TrueExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitBooleanExpression(MiniJavaParser.BooleanExpressionContext ctx);
+	void exitTrueExpression(MiniJavaParser.TrueExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code UnaryMinusExpression}
+	 * Enter a parse tree produced by the {@code AndExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryMinusExpression(MiniJavaParser.UnaryMinusExpressionContext ctx);
+	void enterAndExpression(MiniJavaParser.AndExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code UnaryMinusExpression}
+	 * Exit a parse tree produced by the {@code AndExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryMinusExpression(MiniJavaParser.UnaryMinusExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code BinaryExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterBinaryExpression(MiniJavaParser.BinaryExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BinaryExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitBinaryExpression(MiniJavaParser.BinaryExpressionContext ctx);
+	void exitAndExpression(MiniJavaParser.AndExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code MethodCallExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -560,6 +884,30 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodCallExpression(MiniJavaParser.MethodCallExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code MinusExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMinusExpression(MiniJavaParser.MinusExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MinusExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMinusExpression(MiniJavaParser.MinusExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IdExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdExpression(MiniJavaParser.IdExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdExpression(MiniJavaParser.IdExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ArrayLengthExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -585,6 +933,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitParenExpression(MiniJavaParser.ParenExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code IdIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdIncrementExpression(MiniJavaParser.IdIncrementExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdIncrementExpression(MiniJavaParser.IdIncrementExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code NewIntArrayExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -608,6 +968,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArrayAccessExpression(MiniJavaParser.ArrayAccessExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FalseExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFalseExpression(MiniJavaParser.FalseExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FalseExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFalseExpression(MiniJavaParser.FalseExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ArgumentListDeclar}
 	 * labeled alternative in {@link MiniJavaParser#argumentList}.

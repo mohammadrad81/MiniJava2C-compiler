@@ -3,10 +3,14 @@ package org.example.MiniJavaAntlrImp;
 import java.util.Objects;
 
 public class Symbol {
-    private String name;
-    private String kind;
-    private String javaType;
-    private String cType;
+    private String name = "";
+    private String kind = "";
+    private String javaType = "";
+    private String cType = "";
+
+    public Symbol(){
+
+    }
 
     public Symbol(String name, String kind, String javaType, String cType) {
         this.name = name;
