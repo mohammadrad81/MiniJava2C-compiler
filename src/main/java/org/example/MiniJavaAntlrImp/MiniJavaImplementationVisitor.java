@@ -2,11 +2,9 @@ package org.example.MiniJavaAntlrImp;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.example.MiniJavaAntlr.MiniJavaBaseVisitor;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 
-import javax.management.Attribute;
 import java.util.*;
 
 public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<AttributeContainer> {
@@ -856,6 +854,65 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         );
         return result;
     }
+
+    @Override
+    public AttributeContainer visitForInitParts(MiniJavaParser.ForInitPartsContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        for(MiniJavaParser.ForInitPartContext forInitPartContext: ctx.forInitPart()){
+            AttributeContainer forInitPartAttributeContainer = visit(forInitPartContext);
+            result.appendToCode(
+                forInitPartAttributeContainer.getCode()
+            );
+        }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartArrayMemberAssignment(MiniJavaParser.ForInitPartArrayMemberAssignmentContext ctx) {
+        return visit(ctx.arrayMemberAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForInitPartArrayMemberMulDivModAddSubAssignmentContext ctx) {
+        return visit(ctx.arrayMemberMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartAssignment(MiniJavaParser.ForInitPartAssignmentContext ctx) {
+        return visit(ctx.assign());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartExpression(MiniJavaParser.ForInitPartExpressionContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartFieldAssignment(MiniJavaParser.ForInitPartFieldAssignmentContext ctx) {
+        return visit(ctx.fieldAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartFieldMulDivModAddSubAssignment(MiniJavaParser.ForInitPartFieldMulDivModAddSubAssignmentContext ctx) {
+        return visit(ctx.fieldMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartVariableDeclaration(MiniJavaParser.ForInitPartVariableDeclarationContext ctx) {
+        return visit(ctx.varDeclar());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartVariableDeclarationAssignment(MiniJavaParser.ForInitPartVariableDeclarationAssignmentContext ctx) {
+        return visit(ctx.varDeclarAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForInitPartVariableMulDivModAddSubAssignment(MiniJavaParser.ForInitPartVariableMulDivModAddSubAssignmentContext ctx) {
+        return visit(ctx.variableMulDivModAddSubAssign());
+    }
+
+
 
     @Override
     public AttributeContainer visitParameterDeclar(MiniJavaParser.ParameterDeclarContext ctx) {

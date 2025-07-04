@@ -565,6 +565,13 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdIncrementExpression(MiniJavaParser.IdIncrementExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ArrayMemberIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayMemberIncrementExpression(MiniJavaParser.ArrayMemberIncrementExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code NewIntArrayExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree

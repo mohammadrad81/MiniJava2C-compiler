@@ -965,6 +965,18 @@ public class MiniJavaBaseListener implements MiniJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArrayMemberIncrementExpression(MiniJavaParser.ArrayMemberIncrementExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArrayMemberIncrementExpression(MiniJavaParser.ArrayMemberIncrementExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNewIntArrayExpression(MiniJavaParser.NewIntArrayExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}

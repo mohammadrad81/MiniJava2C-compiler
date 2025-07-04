@@ -1,6 +1,5 @@
 // Generated from MiniJava.g4 by ANTLR 4.9.3
 package org.example.MiniJavaAntlr;
-
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -956,6 +955,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdIncrementExpression(MiniJavaParser.IdIncrementExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayMemberIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMemberIncrementExpression(MiniJavaParser.ArrayMemberIncrementExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayMemberIncrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMemberIncrementExpression(MiniJavaParser.ArrayMemberIncrementExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code NewIntArrayExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.

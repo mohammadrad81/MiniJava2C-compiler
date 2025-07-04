@@ -104,7 +104,7 @@ arrayMemberMulDivModAddSubAssign
 
 
 forInit
-    : forInitPart (', ' forUpdatePart)*                                     # ForInitParts
+    : forInitPart (', ' forInitPart)*                                     # ForInitParts
     ;
 
 forInitPart
