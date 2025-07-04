@@ -912,7 +912,52 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         return visit(ctx.variableMulDivModAddSubAssign());
     }
 
+    @Override
+    public AttributeContainer visitForUpdateParts(MiniJavaParser.ForUpdatePartsContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        for(MiniJavaParser.ForUpdatePartContext forUpdatePartContext: ctx.forUpdatePart()){
+            AttributeContainer forUpdatePartAttributeContainer = visit(forUpdatePartContext);
+            result.appendToCode(
+                    forUpdatePartAttributeContainer.getCode()
+            );
+        }
+        return result;
+    }
 
+    @Override
+    public AttributeContainer visitForUpdatePartArrayMemberAssignment(MiniJavaParser.ForUpdatePartArrayMemberAssignmentContext ctx) {
+        return visit(ctx.arrayMemberAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForUpdatePartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartArrayMemberMulDivModAddSubAssignmentContext ctx) {
+        return visit(ctx.arrayMemberMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForUpdatePartAssignment(MiniJavaParser.ForUpdatePartAssignmentContext ctx) {
+        return visit(ctx.assign());
+    }
+
+    @Override
+    public AttributeContainer visitForUpdatePartExpression(MiniJavaParser.ForUpdatePartExpressionContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public AttributeContainer visitForUpdatePartFieldAssignment(MiniJavaParser.ForUpdatePartFieldAssignmentContext ctx) {
+        return visit(ctx.fieldAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForUpdatePartFieldMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartFieldMulDivModAddSubAssignmentContext ctx) {
+        return visit(ctx.fieldMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitForUpdatePartVariableMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartVariableMulDivModAddSubAssignmentContext ctx) {
+        return visit(ctx.variableMulDivModAddSubAssign());
+    }
 
     @Override
     public AttributeContainer visitParameterDeclar(MiniJavaParser.ParameterDeclarContext ctx) {
