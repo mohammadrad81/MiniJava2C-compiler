@@ -2,6 +2,7 @@ package org.example.MiniJavaAntlrImp;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.example.MiniJavaAntlr.MiniJavaBaseVisitor;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 
@@ -19,6 +20,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     private IntGenerator forIntGenerator;
     private Stack<LoopLabelTuple> loopLabels;
     private MethodSymbol currentMethod;
+    private static final String superDot = "super.";
 
     public MiniJavaImplementationVisitor(Map<String, Environment> classEnvironments,
                                          ErrorHandler errorHandler) {
@@ -55,7 +57,6 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     private Resolvation<Symbol> resolveVariable(String variableName){
         Resolvation<Symbol> resolvation = null;
         boolean alreadyHitCurrentClass = false;
-        String superDot = "superDot";
         StringBuilder prefix = new StringBuilder();
         Environment environment = null;
         for(environment = currentEnvironment; environment != null; environment = environment.getParent()){
@@ -75,6 +76,24 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         prefix + "->" + variableName,
                         environment.getSymbol(variableName)
                 );
+                break;
+            }
+        }
+        return resolvation;
+    }
+
+    private Resolvation<Symbol> resolveField(String fieldName, String javaClass){
+        Resolvation<Symbol> resolvation = null;
+        Environment javaClassEnvironment = classEnvironments.get(javaClass);
+        String postfix = "";
+        Environment environment;
+        for(environment = javaClassEnvironment; environment != null; environment = environment.getParent()){
+            if(environment.containsSymbolName(fieldName)){
+                resolvation = new Resolvation<>(
+                        postfix + "->" + fieldName,
+                        environment.getSymbol(fieldName)
+                );
+                break;
             }
         }
         return resolvation;
@@ -206,7 +225,6 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 .overridingSuperIndices(methodSymbol);
         supersThatMethodOverrides.addFirst(0); // add for current class too
         for(int superIndex: supersThatMethodOverrides){
-            String superDot = "super.";
             result.appendToConstructorCodes(
                     "instance"
                             + currentClass
@@ -575,6 +593,193 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     @Override
+    public AttributeContainer visitFieldAssignment(MiniJavaParser.FieldAssignmentContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer fieldHaverAttributeContainer = visit(ctx.fieldHaver);
+        AttributeContainer valueAttributeContainer = visit(ctx.value);
+        result.appendToCode(fieldHaverAttributeContainer.getCode());
+        result.appendToCode(valueAttributeContainer.getCode());
+        if(fieldHaverAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.start, "int has no fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("int[]")){
+            errorHandler.error(ctx.start, "int[] objects have no assignable fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(ctx.start, "boolean has no fields");
+        }
+        else if(
+                classEnvironments.containsKey(fieldHaverAttributeContainer.getJavaType()) &&
+                        !valueAttributeContainer.getJavaType().isEmpty()
+        ){
+            Resolvation<Symbol> resolvedField = resolveField(ctx.ID().getText(), fieldHaverAttributeContainer.getJavaType());
+            if(resolvedField == null){
+                errorHandler.error((Token) ctx.ID(),
+                        "objects of type "
+                                + fieldHaverAttributeContainer.getJavaType()
+                                + " do not have field "
+                                + ctx.ID().getText()
+                );
+            }
+            else{
+                String cast = "";
+                if(!valueAttributeContainer.getJavaType().equals(resolvedField.getSymbol().getJavaType())){
+                    if(doesExtend(valueAttributeContainer.getJavaType(), resolvedField.getSymbol().getJavaType())){
+                        cast = "(" + MiniJavaToCTypeConvertor.convert(resolvedField.getSymbol().getJavaType()) + ") ";
+                    }
+                    else{
+                        errorHandler.error(ctx.start,
+                                " assigning value of type: "
+                                        + valueAttributeContainer.getJavaType()
+                                        + " to variable with type: "
+                                        + resolvedField.getSymbol().getJavaType()
+                        );
+                    }
+                }
+                result.appendToCode(
+                        fieldHaverAttributeContainer.getAddress()
+                        + "->"
+                        + ctx.ID().getText()
+                        + " = "
+                        + cast
+                        + valueAttributeContainer.getAddress()
+                );
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitFieldMulDivModAddSubAssignment(MiniJavaParser.FieldMulDivModAddSubAssignmentContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer fieldHaverAttributeContainer = visit(ctx.fieldHaver);
+        AttributeContainer valueAttributeContainer = visit(ctx.value);
+        result.appendToCode(fieldHaverAttributeContainer.getCode());
+        result.appendToCode(valueAttributeContainer.getCode());
+        if(fieldHaverAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.start, "int has no fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("int[]")){
+            errorHandler.error(ctx.start, "int[] objects have no assignable fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(ctx.start, "boolean has no fields");
+        }
+        else if(
+                classEnvironments.containsKey(fieldHaverAttributeContainer.getJavaType()) &&
+                        !valueAttributeContainer.getJavaType().isEmpty()
+        ){
+            Resolvation<Symbol> resolvedField = resolveField(ctx.ID().getText(), fieldHaverAttributeContainer.getJavaType());
+            if(resolvedField == null){
+                errorHandler.error((Token) ctx.ID(),
+                        "objects of type "
+                                + fieldHaverAttributeContainer.getJavaType()
+                                + " do not have field "
+                                + ctx.ID().getText()
+                );
+            }
+            else{
+                if(!valueAttributeContainer.getJavaType().equals("int")){
+                    errorHandler.error("operation '"
+                                        + ctx.op.getText()
+                                        + "=' is only applicable for int expressions, but its type is:"
+                                        + valueAttributeContainer.getJavaType());
+                }
+                else if(!resolvedField.getSymbol().getJavaType().equals("int")){
+                    errorHandler.error("operation '"
+                            + ctx.op.getText()
+                            + "=' is only applicable for int variables, but its type is:"
+                            + resolvedField.getSymbol().getJavaType());
+                }
+                else{
+                    result.appendToCode(
+                            fieldHaverAttributeContainer.getAddress()
+                                    + "->"
+                                    + ctx.ID().getText()
+                                    + " = "
+                                    + valueAttributeContainer.getAddress()
+                    );
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitArrayMemberAssignment(MiniJavaParser.ArrayMemberAssignmentContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer arrayAttributeContainer = visit(ctx.array);
+        AttributeContainer indexAttributeContainer = visit(ctx.index);
+        AttributeContainer valueAttributeContainer = visit(ctx.value);
+        if(!arrayAttributeContainer.getJavaType().equals("int[]")){
+            errorHandler.error(ctx.array,
+                    " only objects of type int[] can be indexed, its type is: "
+                            + arrayAttributeContainer.getJavaType());
+        }
+        if(!indexAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.index,
+                    "indices must be of type int, but its type is: "
+                            + indexAttributeContainer.getJavaType());
+        }
+        if(!valueAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.value,
+                    "values to be assigned to an int array must be int, but its type is: "
+                            + valueAttributeContainer.getJavaType());
+        }
+        result.appendToCode(arrayAttributeContainer.getCode());
+        result.appendToCode(indexAttributeContainer.getCode());
+        result.appendToCode(valueAttributeContainer.getCode());
+        result.appendToCode(
+                arrayAttributeContainer.getAddress()
+                + "->data["
+                + indexAttributeContainer.getAddress()
+                + "] = "
+                + valueAttributeContainer.getAddress()
+                + ";\n"
+        );
+        return result;
+    }
+
+
+
+    @Override
+    public AttributeContainer visitArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer arrayAttributeContainer = visit(ctx.array);
+        AttributeContainer indexAttributeContainer = visit(ctx.index);
+        AttributeContainer valueAttributeContainer = visit(ctx.value);
+        if(!arrayAttributeContainer.getJavaType().equals("int[]")){
+            errorHandler.error(ctx.array,
+                    " only objects of type int[] can be indexed, its type is: "
+                            + arrayAttributeContainer.getJavaType());
+        }
+        if(!indexAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.index,
+                    "indices must be of type int, but its type is: "
+                            + indexAttributeContainer.getJavaType());
+        }
+        if(!valueAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.value,
+                    "values to be assigned to an int array must be int, but its type is: "
+                            + valueAttributeContainer.getJavaType());
+        }
+        result.appendToCode(arrayAttributeContainer.getCode());
+        result.appendToCode(indexAttributeContainer.getCode());
+        result.appendToCode(valueAttributeContainer.getCode());
+        result.appendToCode(
+                arrayAttributeContainer.getAddress()
+                        + "->data["
+                        + indexAttributeContainer.getAddress()
+                        + "] "
+                        + ctx.op.getText()
+                        + "= "
+                        + valueAttributeContainer.getAddress()
+                        + ";\n"
+        );
+        return result;
+    }
+
+    @Override
     public AttributeContainer visitParameterListDeclar(MiniJavaParser.ParameterListDeclarContext ctx) {
         AttributeContainer result = new AttributeContainer();
         for(int i = 0; i < ctx.parameter().size(); i++){
@@ -588,6 +793,67 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             result.getJavaTypeList().add(parameterAttributeContainer.getJavaType());
             result.getcTypeList().add(parameterAttributeContainer.getcType());
         }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitVariableDeclarationStatement(MiniJavaParser.VariableDeclarationStatementContext ctx) {
+        return visit(ctx.varDeclar());
+    }
+
+    @Override
+    public AttributeContainer visitVariableDeclarationWithAssignmentStatement(MiniJavaParser.VariableDeclarationWithAssignmentStatementContext ctx) {
+        return visit(ctx.varDeclarAssign());
+    }
+
+    @Override
+    public AttributeContainer visitVariableAssignmentStatement(MiniJavaParser.VariableAssignmentStatementContext ctx) {
+        return visit(ctx.assign());
+    }
+
+    @Override
+    public AttributeContainer visitVariableMulDivModAddSubAssignmentStatement(MiniJavaParser.VariableMulDivModAddSubAssignmentStatementContext ctx) {
+        return visit(ctx.variableMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitFieldAssignmentStatement(MiniJavaParser.FieldAssignmentStatementContext ctx) {
+        return visit(ctx.fieldAssign());
+    }
+
+    @Override
+    public AttributeContainer visitFieldMulDivModAddSubAssignmentStatement(MiniJavaParser.FieldMulDivModAddSubAssignmentStatementContext ctx) {
+        return visit(ctx.fieldMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitArrayMemberAssignmentStatement(MiniJavaParser.ArrayMemberAssignmentStatementContext ctx) {
+        return visit(ctx.arrayMemberAssign());
+    }
+
+    @Override
+    public AttributeContainer visitArrayMemberMulDivModAddSubAssignmentStatement(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentStatementContext ctx) {
+        return visit(ctx.arrayMemberMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitExpressionStatement(MiniJavaParser.ExpressionStatementContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public AttributeContainer visitPrintStatement(MiniJavaParser.PrintStatementContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer expressionAttributeContainer = visit(ctx.expression());
+        if(!expressionAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.expression().start, "only int variables can be printed");
+        }
+        result.appendToCode(expressionAttributeContainer.getCode());
+        result.appendToCode(
+                "printf(\"%d\", "
+                    + expressionAttributeContainer.getAddress()
+                    + ");\n"
+        );
         return result;
     }
 

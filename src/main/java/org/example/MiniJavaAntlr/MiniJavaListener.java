@@ -837,6 +837,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitAddSubExpression(MiniJavaParser.AddSubExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code ArrayMemberExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayMemberExpression(MiniJavaParser.ArrayMemberExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayMemberExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayMemberExpression(MiniJavaParser.ArrayMemberExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ThisExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -956,18 +968,6 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNewIntArrayExpression(MiniJavaParser.NewIntArrayExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ArrayAccessExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayAccessExpression(MiniJavaParser.ArrayAccessExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ArrayAccessExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayAccessExpression(MiniJavaParser.ArrayAccessExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FalseExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.

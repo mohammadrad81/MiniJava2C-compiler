@@ -1978,13 +1978,15 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class FieldAssignmentContext extends FieldAssignContext {
+		public ExpressionContext fieldHaver;
+		public ExpressionContext value;
+		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public FieldAssignmentContext(FieldAssignContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2009,7 +2011,7 @@ public class MiniJavaParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(272);
-			expression(0);
+			((FieldAssignmentContext)_localctx).fieldHaver = expression(0);
 			setState(273);
 			match(T__26);
 			setState(274);
@@ -2017,7 +2019,7 @@ public class MiniJavaParser extends Parser {
 			setState(275);
 			match(T__29);
 			setState(276);
-			expression(0);
+			((FieldAssignmentContext)_localctx).value = expression(0);
 			setState(277);
 			match(T__13);
 			}
@@ -2045,14 +2047,16 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class FieldMulDivModAddSubAssignmentContext extends FieldMulDivModAddSubAssignContext {
+		public ExpressionContext fieldHaver;
 		public Token op;
+		public ExpressionContext value;
+		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
 		public ExpressionContext expression(int i) {
 			return getRuleContext(ExpressionContext.class,i);
 		}
-		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public FieldMulDivModAddSubAssignmentContext(FieldMulDivModAddSubAssignContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2078,7 +2082,7 @@ public class MiniJavaParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(279);
-			expression(0);
+			((FieldMulDivModAddSubAssignmentContext)_localctx).fieldHaver = expression(0);
 			setState(280);
 			match(T__26);
 			setState(281);
@@ -2097,7 +2101,7 @@ public class MiniJavaParser extends Parser {
 			setState(283);
 			match(T__29);
 			setState(284);
-			expression(0);
+			((FieldMulDivModAddSubAssignmentContext)_localctx).value = expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2123,6 +2127,9 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class ArrayMemberAssignmentContext extends ArrayMemberAssignContext {
+		public ExpressionContext array;
+		public ExpressionContext index;
+		public ExpressionContext value;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -2153,17 +2160,17 @@ public class MiniJavaParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(286);
-			expression(0);
+			((ArrayMemberAssignmentContext)_localctx).array = expression(0);
 			setState(287);
 			match(T__8);
 			setState(288);
-			expression(0);
+			((ArrayMemberAssignmentContext)_localctx).index = expression(0);
 			setState(289);
 			match(T__9);
 			setState(290);
 			match(T__29);
 			setState(291);
-			expression(0);
+			((ArrayMemberAssignmentContext)_localctx).value = expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2189,7 +2196,10 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class ArrayMemberMulDivModAddSubAssignmentContext extends ArrayMemberMulDivModAddSubAssignContext {
+		public ExpressionContext array;
+		public ExpressionContext index;
 		public Token op;
+		public ExpressionContext value;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -2221,11 +2231,11 @@ public class MiniJavaParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(293);
-			expression(0);
+			((ArrayMemberMulDivModAddSubAssignmentContext)_localctx).array = expression(0);
 			setState(294);
 			match(T__8);
 			setState(295);
-			expression(0);
+			((ArrayMemberMulDivModAddSubAssignmentContext)_localctx).index = expression(0);
 			setState(296);
 			match(T__9);
 			setState(297);
@@ -2242,7 +2252,7 @@ public class MiniJavaParser extends Parser {
 			setState(298);
 			match(T__29);
 			setState(299);
-			expression(0);
+			((ArrayMemberMulDivModAddSubAssignmentContext)_localctx).value = expression(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2913,10 +2923,11 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class FieldDecrementExpressionContext extends ExpressionContext {
+		public ExpressionContext fieldHaver;
+		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public FieldDecrementExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2969,10 +2980,11 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class FieldIncrementExpressionContext extends ExpressionContext {
+		public ExpressionContext fieldHaver;
+		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public FieldIncrementExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2989,7 +3001,9 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class CompareExpressionContext extends ExpressionContext {
+		public ExpressionContext leftSide;
 		public Token op;
+		public ExpressionContext rightSide;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -3012,7 +3026,9 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class OrExpressionContext extends ExpressionContext {
+		public ExpressionContext leftSide;
 		public Token op;
+		public ExpressionContext rightSide;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -3035,7 +3051,9 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class MulDivModExpressionContext extends ExpressionContext {
+		public ExpressionContext leftSide;
 		public Token op;
+		public ExpressionContext rightSide;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -3075,10 +3093,11 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class FieldExpressionContext extends ExpressionContext {
+		public ExpressionContext fieldHaver;
+		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public FieldExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -3112,7 +3131,9 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class AddSubExpressionContext extends ExpressionContext {
+		public ExpressionContext leftSide;
 		public Token op;
+		public ExpressionContext rightSide;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -3131,6 +3152,30 @@ public class MiniJavaParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiniJavaVisitor ) return ((MiniJavaVisitor<? extends T>)visitor).visitAddSubExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ArrayMemberExpressionContext extends ExpressionContext {
+		public ExpressionContext array;
+		public ExpressionContext index;
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public ArrayMemberExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiniJavaListener ) ((MiniJavaListener)listener).enterArrayMemberExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiniJavaListener ) ((MiniJavaListener)listener).exitArrayMemberExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof MiniJavaVisitor ) return ((MiniJavaVisitor<? extends T>)visitor).visitArrayMemberExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -3167,7 +3212,9 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class AndExpressionContext extends ExpressionContext {
+		public ExpressionContext leftSide;
 		public Token op;
+		public ExpressionContext rightSide;
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
 		}
@@ -3190,12 +3237,13 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class MethodCallExpressionContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
-		}
+		public ExpressionContext fieldHaver;
 		public TerminalNode ID() { return getToken(MiniJavaParser.ID, 0); }
 		public ArgumentListContext argumentList() {
 			return getRuleContext(ArgumentListContext.class,0);
+		}
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
 		}
 		public MethodCallExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
@@ -3249,6 +3297,7 @@ public class MiniJavaParser extends Parser {
 		}
 	}
 	public static class ArrayLengthExpressionContext extends ExpressionContext {
+		public ExpressionContext array;
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
@@ -3319,28 +3368,6 @@ public class MiniJavaParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiniJavaVisitor ) return ((MiniJavaVisitor<? extends T>)visitor).visitNewIntArrayExpression(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ArrayAccessExpressionContext extends ExpressionContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public ArrayAccessExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniJavaListener ) ((MiniJavaListener)listener).enterArrayAccessExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniJavaListener ) ((MiniJavaListener)listener).exitArrayAccessExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MiniJavaVisitor ) return ((MiniJavaVisitor<? extends T>)visitor).visitArrayAccessExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -3553,20 +3580,21 @@ public class MiniJavaParser extends Parser {
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(426);
+			setState(418);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,28,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(424);
+					setState(416);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,27,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,25,_ctx) ) {
 					case 1:
 						{
 						_localctx = new MulDivModExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((MulDivModExpressionContext)_localctx).leftSide = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(375);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
@@ -3582,12 +3610,13 @@ public class MiniJavaParser extends Parser {
 							consume();
 						}
 						setState(377);
-						expression(13);
+						((MulDivModExpressionContext)_localctx).rightSide = expression(13);
 						}
 						break;
 					case 2:
 						{
 						_localctx = new AddSubExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((AddSubExpressionContext)_localctx).leftSide = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(378);
 						if (!(precpred(_ctx, 11))) throw new FailedPredicateException(this, "precpred(_ctx, 11)");
@@ -3603,12 +3632,13 @@ public class MiniJavaParser extends Parser {
 							consume();
 						}
 						setState(380);
-						expression(12);
+						((AddSubExpressionContext)_localctx).rightSide = expression(12);
 						}
 						break;
 					case 3:
 						{
 						_localctx = new CompareExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((CompareExpressionContext)_localctx).leftSide = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(381);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
@@ -3624,43 +3654,46 @@ public class MiniJavaParser extends Parser {
 							consume();
 						}
 						setState(383);
-						expression(11);
+						((CompareExpressionContext)_localctx).rightSide = expression(11);
 						}
 						break;
 					case 4:
 						{
 						_localctx = new AndExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((AndExpressionContext)_localctx).leftSide = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(384);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
 						setState(385);
 						((AndExpressionContext)_localctx).op = match(T__47);
 						setState(386);
-						expression(10);
+						((AndExpressionContext)_localctx).rightSide = expression(10);
 						}
 						break;
 					case 5:
 						{
 						_localctx = new OrExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((OrExpressionContext)_localctx).leftSide = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(387);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
 						setState(388);
 						((OrExpressionContext)_localctx).op = match(T__48);
 						setState(389);
-						expression(9);
+						((OrExpressionContext)_localctx).rightSide = expression(9);
 						}
 						break;
 					case 6:
 						{
-						_localctx = new ArrayAccessExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new ArrayMemberExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((ArrayMemberExpressionContext)_localctx).array = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(390);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
 						setState(391);
 						match(T__8);
 						setState(392);
-						expression(0);
+						((ArrayMemberExpressionContext)_localctx).index = expression(0);
 						setState(393);
 						match(T__9);
 						}
@@ -3668,6 +3701,7 @@ public class MiniJavaParser extends Parser {
 					case 7:
 						{
 						_localctx = new ArrayLengthExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((ArrayLengthExpressionContext)_localctx).array = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(395);
 						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
@@ -3680,6 +3714,7 @@ public class MiniJavaParser extends Parser {
 					case 8:
 						{
 						_localctx = new FieldExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((FieldExpressionContext)_localctx).fieldHaver = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(398);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
@@ -3692,91 +3727,58 @@ public class MiniJavaParser extends Parser {
 					case 9:
 						{
 						_localctx = new FieldIncrementExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((FieldIncrementExpressionContext)_localctx).fieldHaver = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(401);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
 						setState(402);
 						match(T__26);
-						setState(407);
-						_errHandler.sync(this);
-						switch (_input.LA(1)) {
-						case ID:
-							{
-							setState(403);
-							match(ID);
-							setState(404);
-							match(T__38);
-							}
-							break;
-						case T__38:
-							{
-							setState(405);
-							match(T__38);
-							setState(406);
-							match(ID);
-							}
-							break;
-						default:
-							throw new NoViableAltException(this);
-						}
+						setState(403);
+						match(ID);
+						setState(404);
+						match(T__38);
 						}
 						break;
 					case 10:
 						{
 						_localctx = new FieldDecrementExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((FieldDecrementExpressionContext)_localctx).fieldHaver = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(409);
+						setState(405);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
-						setState(410);
+						setState(406);
 						match(T__26);
-						setState(415);
-						_errHandler.sync(this);
-						switch (_input.LA(1)) {
-						case ID:
-							{
-							setState(411);
-							match(ID);
-							setState(412);
-							match(T__39);
-							}
-							break;
-						case T__39:
-							{
-							setState(413);
-							match(T__39);
-							setState(414);
-							match(ID);
-							}
-							break;
-						default:
-							throw new NoViableAltException(this);
-						}
+						setState(407);
+						match(ID);
+						setState(408);
+						match(T__39);
 						}
 						break;
 					case 11:
 						{
 						_localctx = new MethodCallExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						((MethodCallExpressionContext)_localctx).fieldHaver = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(417);
+						setState(409);
 						if (!(precpred(_ctx, 15))) throw new FailedPredicateException(this, "precpred(_ctx, 15)");
-						setState(418);
+						setState(410);
 						match(T__26);
-						setState(419);
+						setState(411);
 						match(ID);
-						setState(420);
+						setState(412);
 						match(T__6);
-						setState(421);
+						setState(413);
 						argumentList();
-						setState(422);
+						setState(414);
 						match(T__10);
 						}
 						break;
 					}
 					} 
 				}
-				setState(428);
+				setState(420);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,28,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,26,_ctx);
 			}
 			}
 		}
@@ -3833,26 +3835,26 @@ public class MiniJavaParser extends Parser {
 			_localctx = new ArgumentListDeclarContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(437);
+			setState(429);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__34) | (1L << T__36) | (1L << T__38) | (1L << T__39) | (1L << T__40) | (1L << T__49) | (1L << T__50) | (1L << T__51) | (1L << ID) | (1L << INTEGER))) != 0)) {
 				{
-				setState(429);
+				setState(421);
 				expression(0);
-				setState(434);
+				setState(426);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__14) {
 					{
 					{
-					setState(430);
+					setState(422);
 					match(T__14);
-					setState(431);
+					setState(423);
 					expression(0);
 					}
 					}
-					setState(436);
+					setState(428);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -3908,7 +3910,7 @@ public class MiniJavaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3;\u01ba\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3;\u01b2\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3937,51 +3939,50 @@ public class MiniJavaParser extends Parser {
 		"\n\31\3\31\3\31\3\31\3\31\5\31\u0173\n\31\3\31\3\31\3\31\5\31\u0178\n"+
 		"\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3"+
 		"\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3"+
-		"\31\3\31\3\31\3\31\3\31\5\31\u019a\n\31\3\31\3\31\3\31\3\31\3\31\3\31"+
-		"\5\31\u01a2\n\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\7\31\u01ab\n\31\f"+
-		"\31\16\31\u01ae\13\31\3\32\3\32\3\32\7\32\u01b3\n\32\f\32\16\32\u01b6"+
-		"\13\32\5\32\u01b8\n\32\3\32\2\3\60\33\2\4\6\b\n\f\16\20\22\24\26\30\32"+
-		"\34\36 \"$&(*,.\60\62\2\6\3\2!%\3\2!#\3\2$%\3\2,\61\2\u01f2\2\64\3\2\2"+
-		"\2\4>\3\2\2\2\6W\3\2\2\2\bf\3\2\2\2\ni\3\2\2\2\fw\3\2\2\2\16{\3\2\2\2"+
-		"\20\u0095\3\2\2\2\22\u0097\3\2\2\2\24\u00a0\3\2\2\2\26\u00ff\3\2\2\2\30"+
-		"\u0101\3\2\2\2\32\u0104\3\2\2\2\34\u0109\3\2\2\2\36\u010d\3\2\2\2 \u0112"+
-		"\3\2\2\2\"\u0119\3\2\2\2$\u0120\3\2\2\2&\u0127\3\2\2\2(\u012f\3\2\2\2"+
-		"*\u0140\3\2\2\2,\u0142\3\2\2\2.\u0151\3\2\2\2\60\u0177\3\2\2\2\62\u01b7"+
-		"\3\2\2\2\648\5\4\3\2\65\67\5\6\4\2\66\65\3\2\2\2\67:\3\2\2\28\66\3\2\2"+
-		"\289\3\2\2\29;\3\2\2\2:8\3\2\2\2;<\7\2\2\3<\3\3\2\2\2=?\7\3\2\2>=\3\2"+
-		"\2\2>?\3\2\2\2?@\3\2\2\2@A\7\4\2\2AB\7\67\2\2BC\7\5\2\2CD\7\3\2\2DE\7"+
-		"\6\2\2EF\7\7\2\2FG\7\b\2\2GH\7\t\2\2HI\7\n\2\2IJ\7\13\2\2JK\7\f\2\2KL"+
-		"\7\67\2\2LM\7\r\2\2MQ\7\5\2\2NP\5\26\f\2ON\3\2\2\2PS\3\2\2\2QO\3\2\2\2"+
-		"QR\3\2\2\2RT\3\2\2\2SQ\3\2\2\2TU\7\16\2\2UV\7\16\2\2V\5\3\2\2\2WX\7\4"+
-		"\2\2X[\7\67\2\2YZ\7\17\2\2Z\\\7\67\2\2[Y\3\2\2\2[\\\3\2\2\2\\]\3\2\2\2"+
-		"]^\7\5\2\2^_\5\b\5\2_`\7\16\2\2`\7\3\2\2\2ae\5\f\7\2be\5\n\6\2ce\5\16"+
-		"\b\2da\3\2\2\2db\3\2\2\2dc\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg\3\2\2\2g\t\3"+
-		"\2\2\2hf\3\2\2\2ij\7\3\2\2jk\7\67\2\2kl\7\t\2\2lm\5\20\t\2mn\7\r\2\2n"+
-		"r\7\5\2\2oq\5\26\f\2po\3\2\2\2qt\3\2\2\2rp\3\2\2\2rs\3\2\2\2su\3\2\2\2"+
-		"tr\3\2\2\2uv\7\16\2\2v\13\3\2\2\2wx\5\24\13\2xy\7\67\2\2yz\7\20\2\2z\r"+
-		"\3\2\2\2{~\7\3\2\2|\177\5\24\13\2}\177\7\7\2\2~|\3\2\2\2~}\3\2\2\2\177"+
-		"\u0080\3\2\2\2\u0080\u0081\7\67\2\2\u0081\u0082\7\t\2\2\u0082\u0083\5"+
-		"\20\t\2\u0083\u0084\7\r\2\2\u0084\u0088\7\5\2\2\u0085\u0087\5\26\f\2\u0086"+
-		"\u0085\3\2\2\2\u0087\u008a\3\2\2\2\u0088\u0086\3\2\2\2\u0088\u0089\3\2"+
-		"\2\2\u0089\u008b\3\2\2\2\u008a\u0088\3\2\2\2\u008b\u008c\7\16\2\2\u008c"+
-		"\17\3\2\2\2\u008d\u0092\5\22\n\2\u008e\u008f\7\21\2\2\u008f\u0091\5\22"+
-		"\n\2\u0090\u008e\3\2\2\2\u0091\u0094\3\2\2\2\u0092\u0090\3\2\2\2\u0092"+
-		"\u0093\3\2\2\2\u0093\u0096\3\2\2\2\u0094\u0092\3\2\2\2\u0095\u008d\3\2"+
-		"\2\2\u0095\u0096\3\2\2\2\u0096\21\3\2\2\2\u0097\u0098\5\24\13\2\u0098"+
-		"\u0099\7\67\2\2\u0099\23\3\2\2\2\u009a\u009b\7\22\2\2\u009b\u009c\7\13"+
-		"\2\2\u009c\u00a1\7\f\2\2\u009d\u00a1\7\23\2\2\u009e\u00a1\7\22\2\2\u009f"+
-		"\u00a1\7\67\2\2\u00a0\u009a\3\2\2\2\u00a0\u009d\3\2\2\2\u00a0\u009e\3"+
-		"\2\2\2\u00a0\u009f\3\2\2\2\u00a1\25\3\2\2\2\u00a2\u00a6\7\5\2\2\u00a3"+
-		"\u00a5\5\26\f\2\u00a4\u00a3\3\2\2\2\u00a5\u00a8\3\2\2\2\u00a6\u00a4\3"+
-		"\2\2\2\u00a6\u00a7\3\2\2\2\u00a7\u00a9\3\2\2\2\u00a8\u00a6\3\2\2\2\u00a9"+
-		"\u0100\7\16\2\2\u00aa\u00ab\7\24\2\2\u00ab\u00ac\7\t\2\2\u00ac\u00ad\5"+
-		"\60\31\2\u00ad\u00ae\7\r\2\2\u00ae\u00b1\5\26\f\2\u00af\u00b0\7\25\2\2"+
-		"\u00b0\u00b2\5\26\f\2\u00b1\u00af\3\2\2\2\u00b1\u00b2\3\2\2\2\u00b2\u0100"+
-		"\3\2\2\2\u00b3\u00b4\7\26\2\2\u00b4\u00b5\7\t\2\2\u00b5\u00b6\5\60\31"+
-		"\2\u00b6\u00b7\7\r\2\2\u00b7\u00b8\5\26\f\2\u00b8\u0100\3\2\2\2\u00b9"+
-		"\u00ba\7\27\2\2\u00ba\u00bb\5\26\f\2\u00bb\u00bc\7\26\2\2\u00bc\u00bd"+
-		"\7\t\2\2\u00bd\u00be\5\60\31\2\u00be\u00bf\7\r\2\2\u00bf\u00c0\7\20\2"+
-		"\2\u00c0\u0100\3\2\2\2\u00c1\u00c2\7\30\2\2\u00c2\u00c4\7\t\2\2\u00c3"+
+		"\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\7"+
+		"\31\u01a3\n\31\f\31\16\31\u01a6\13\31\3\32\3\32\3\32\7\32\u01ab\n\32\f"+
+		"\32\16\32\u01ae\13\32\5\32\u01b0\n\32\3\32\2\3\60\33\2\4\6\b\n\f\16\20"+
+		"\22\24\26\30\32\34\36 \"$&(*,.\60\62\2\6\3\2!%\3\2!#\3\2$%\3\2,\61\2\u01e8"+
+		"\2\64\3\2\2\2\4>\3\2\2\2\6W\3\2\2\2\bf\3\2\2\2\ni\3\2\2\2\fw\3\2\2\2\16"+
+		"{\3\2\2\2\20\u0095\3\2\2\2\22\u0097\3\2\2\2\24\u00a0\3\2\2\2\26\u00ff"+
+		"\3\2\2\2\30\u0101\3\2\2\2\32\u0104\3\2\2\2\34\u0109\3\2\2\2\36\u010d\3"+
+		"\2\2\2 \u0112\3\2\2\2\"\u0119\3\2\2\2$\u0120\3\2\2\2&\u0127\3\2\2\2(\u012f"+
+		"\3\2\2\2*\u0140\3\2\2\2,\u0142\3\2\2\2.\u0151\3\2\2\2\60\u0177\3\2\2\2"+
+		"\62\u01af\3\2\2\2\648\5\4\3\2\65\67\5\6\4\2\66\65\3\2\2\2\67:\3\2\2\2"+
+		"8\66\3\2\2\289\3\2\2\29;\3\2\2\2:8\3\2\2\2;<\7\2\2\3<\3\3\2\2\2=?\7\3"+
+		"\2\2>=\3\2\2\2>?\3\2\2\2?@\3\2\2\2@A\7\4\2\2AB\7\67\2\2BC\7\5\2\2CD\7"+
+		"\3\2\2DE\7\6\2\2EF\7\7\2\2FG\7\b\2\2GH\7\t\2\2HI\7\n\2\2IJ\7\13\2\2JK"+
+		"\7\f\2\2KL\7\67\2\2LM\7\r\2\2MQ\7\5\2\2NP\5\26\f\2ON\3\2\2\2PS\3\2\2\2"+
+		"QO\3\2\2\2QR\3\2\2\2RT\3\2\2\2SQ\3\2\2\2TU\7\16\2\2UV\7\16\2\2V\5\3\2"+
+		"\2\2WX\7\4\2\2X[\7\67\2\2YZ\7\17\2\2Z\\\7\67\2\2[Y\3\2\2\2[\\\3\2\2\2"+
+		"\\]\3\2\2\2]^\7\5\2\2^_\5\b\5\2_`\7\16\2\2`\7\3\2\2\2ae\5\f\7\2be\5\n"+
+		"\6\2ce\5\16\b\2da\3\2\2\2db\3\2\2\2dc\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg\3"+
+		"\2\2\2g\t\3\2\2\2hf\3\2\2\2ij\7\3\2\2jk\7\67\2\2kl\7\t\2\2lm\5\20\t\2"+
+		"mn\7\r\2\2nr\7\5\2\2oq\5\26\f\2po\3\2\2\2qt\3\2\2\2rp\3\2\2\2rs\3\2\2"+
+		"\2su\3\2\2\2tr\3\2\2\2uv\7\16\2\2v\13\3\2\2\2wx\5\24\13\2xy\7\67\2\2y"+
+		"z\7\20\2\2z\r\3\2\2\2{~\7\3\2\2|\177\5\24\13\2}\177\7\7\2\2~|\3\2\2\2"+
+		"~}\3\2\2\2\177\u0080\3\2\2\2\u0080\u0081\7\67\2\2\u0081\u0082\7\t\2\2"+
+		"\u0082\u0083\5\20\t\2\u0083\u0084\7\r\2\2\u0084\u0088\7\5\2\2\u0085\u0087"+
+		"\5\26\f\2\u0086\u0085\3\2\2\2\u0087\u008a\3\2\2\2\u0088\u0086\3\2\2\2"+
+		"\u0088\u0089\3\2\2\2\u0089\u008b\3\2\2\2\u008a\u0088\3\2\2\2\u008b\u008c"+
+		"\7\16\2\2\u008c\17\3\2\2\2\u008d\u0092\5\22\n\2\u008e\u008f\7\21\2\2\u008f"+
+		"\u0091\5\22\n\2\u0090\u008e\3\2\2\2\u0091\u0094\3\2\2\2\u0092\u0090\3"+
+		"\2\2\2\u0092\u0093\3\2\2\2\u0093\u0096\3\2\2\2\u0094\u0092\3\2\2\2\u0095"+
+		"\u008d\3\2\2\2\u0095\u0096\3\2\2\2\u0096\21\3\2\2\2\u0097\u0098\5\24\13"+
+		"\2\u0098\u0099\7\67\2\2\u0099\23\3\2\2\2\u009a\u009b\7\22\2\2\u009b\u009c"+
+		"\7\13\2\2\u009c\u00a1\7\f\2\2\u009d\u00a1\7\23\2\2\u009e\u00a1\7\22\2"+
+		"\2\u009f\u00a1\7\67\2\2\u00a0\u009a\3\2\2\2\u00a0\u009d\3\2\2\2\u00a0"+
+		"\u009e\3\2\2\2\u00a0\u009f\3\2\2\2\u00a1\25\3\2\2\2\u00a2\u00a6\7\5\2"+
+		"\2\u00a3\u00a5\5\26\f\2\u00a4\u00a3\3\2\2\2\u00a5\u00a8\3\2\2\2\u00a6"+
+		"\u00a4\3\2\2\2\u00a6\u00a7\3\2\2\2\u00a7\u00a9\3\2\2\2\u00a8\u00a6\3\2"+
+		"\2\2\u00a9\u0100\7\16\2\2\u00aa\u00ab\7\24\2\2\u00ab\u00ac\7\t\2\2\u00ac"+
+		"\u00ad\5\60\31\2\u00ad\u00ae\7\r\2\2\u00ae\u00b1\5\26\f\2\u00af\u00b0"+
+		"\7\25\2\2\u00b0\u00b2\5\26\f\2\u00b1\u00af\3\2\2\2\u00b1\u00b2\3\2\2\2"+
+		"\u00b2\u0100\3\2\2\2\u00b3\u00b4\7\26\2\2\u00b4\u00b5\7\t\2\2\u00b5\u00b6"+
+		"\5\60\31\2\u00b6\u00b7\7\r\2\2\u00b7\u00b8\5\26\f\2\u00b8\u0100\3\2\2"+
+		"\2\u00b9\u00ba\7\27\2\2\u00ba\u00bb\5\26\f\2\u00bb\u00bc\7\26\2\2\u00bc"+
+		"\u00bd\7\t\2\2\u00bd\u00be\5\60\31\2\u00be\u00bf\7\r\2\2\u00bf\u00c0\7"+
+		"\20\2\2\u00c0\u0100\3\2\2\2\u00c1\u00c2\7\30\2\2\u00c2\u00c4\7\t\2\2\u00c3"+
 		"\u00c5\5(\25\2\u00c4\u00c3\3\2\2\2\u00c4\u00c5\3\2\2\2\u00c5\u00c6\3\2"+
 		"\2\2\u00c6\u00c8\7\20\2\2\u00c7\u00c9\5\60\31\2\u00c8\u00c7\3\2\2\2\u00c8"+
 		"\u00c9\3\2\2\2\u00c9\u00ca\3\2\2\2\u00ca\u00cc\7\20\2\2\u00cb\u00cd\5"+
@@ -4048,32 +4049,29 @@ public class MiniJavaParser extends Parser {
 		"\2\2\2\u0177\u015e\3\2\2\2\u0177\u0162\3\2\2\2\u0177\u0164\3\2\2\2\u0177"+
 		"\u0166\3\2\2\2\u0177\u0167\3\2\2\2\u0177\u016c\3\2\2\2\u0177\u0172\3\2"+
 		"\2\2\u0177\u0174\3\2\2\2\u0177\u0175\3\2\2\2\u0177\u0176\3\2\2\2\u0178"+
-		"\u01ac\3\2\2\2\u0179\u017a\f\16\2\2\u017a\u017b\t\3\2\2\u017b\u01ab\5"+
-		"\60\31\17\u017c\u017d\f\r\2\2\u017d\u017e\t\4\2\2\u017e\u01ab\5\60\31"+
-		"\16\u017f\u0180\f\f\2\2\u0180\u0181\t\5\2\2\u0181\u01ab\5\60\31\r\u0182"+
-		"\u0183\f\13\2\2\u0183\u0184\7\62\2\2\u0184\u01ab\5\60\31\f\u0185\u0186"+
-		"\f\n\2\2\u0186\u0187\7\63\2\2\u0187\u01ab\5\60\31\13\u0188\u0189\f\26"+
+		"\u01a4\3\2\2\2\u0179\u017a\f\16\2\2\u017a\u017b\t\3\2\2\u017b\u01a3\5"+
+		"\60\31\17\u017c\u017d\f\r\2\2\u017d\u017e\t\4\2\2\u017e\u01a3\5\60\31"+
+		"\16\u017f\u0180\f\f\2\2\u0180\u0181\t\5\2\2\u0181\u01a3\5\60\31\r\u0182"+
+		"\u0183\f\13\2\2\u0183\u0184\7\62\2\2\u0184\u01a3\5\60\31\f\u0185\u0186"+
+		"\f\n\2\2\u0186\u0187\7\63\2\2\u0187\u01a3\5\60\31\13\u0188\u0189\f\26"+
 		"\2\2\u0189\u018a\7\13\2\2\u018a\u018b\5\60\31\2\u018b\u018c\7\f\2\2\u018c"+
-		"\u01ab\3\2\2\2\u018d\u018e\f\25\2\2\u018e\u018f\7\35\2\2\u018f\u01ab\7"+
-		"(\2\2\u0190\u0191\f\24\2\2\u0191\u0192\7\35\2\2\u0192\u01ab\7\67\2\2\u0193"+
-		"\u0194\f\23\2\2\u0194\u0199\7\35\2\2\u0195\u0196\7\67\2\2\u0196\u019a"+
-		"\7)\2\2\u0197\u0198\7)\2\2\u0198\u019a\7\67\2\2\u0199\u0195\3\2\2\2\u0199"+
-		"\u0197\3\2\2\2\u019a\u01ab\3\2\2\2\u019b\u019c\f\22\2\2\u019c\u01a1\7"+
-		"\35\2\2\u019d\u019e\7\67\2\2\u019e\u01a2\7*\2\2\u019f\u01a0\7*\2\2\u01a0"+
-		"\u01a2\7\67\2\2\u01a1\u019d\3\2\2\2\u01a1\u019f\3\2\2\2\u01a2\u01ab\3"+
-		"\2\2\2\u01a3\u01a4\f\21\2\2\u01a4\u01a5\7\35\2\2\u01a5\u01a6\7\67\2\2"+
-		"\u01a6\u01a7\7\t\2\2\u01a7\u01a8\5\62\32\2\u01a8\u01a9\7\r\2\2\u01a9\u01ab"+
-		"\3\2\2\2\u01aa\u0179\3\2\2\2\u01aa\u017c\3\2\2\2\u01aa\u017f\3\2\2\2\u01aa"+
-		"\u0182\3\2\2\2\u01aa\u0185\3\2\2\2\u01aa\u0188\3\2\2\2\u01aa\u018d\3\2"+
-		"\2\2\u01aa\u0190\3\2\2\2\u01aa\u0193\3\2\2\2\u01aa\u019b\3\2\2\2\u01aa"+
-		"\u01a3\3\2\2\2\u01ab\u01ae\3\2\2\2\u01ac\u01aa\3\2\2\2\u01ac\u01ad\3\2"+
-		"\2\2\u01ad\61\3\2\2\2\u01ae\u01ac\3\2\2\2\u01af\u01b4\5\60\31\2\u01b0"+
-		"\u01b1\7\21\2\2\u01b1\u01b3\5\60\31\2\u01b2\u01b0\3\2\2\2\u01b3\u01b6"+
-		"\3\2\2\2\u01b4\u01b2\3\2\2\2\u01b4\u01b5\3\2\2\2\u01b5\u01b8\3\2\2\2\u01b6"+
-		"\u01b4\3\2\2\2\u01b7\u01af\3\2\2\2\u01b7\u01b8\3\2\2\2\u01b8\63\3\2\2"+
-		"\2!8>Q[dfr~\u0088\u0092\u0095\u00a0\u00a6\u00b1\u00c4\u00c8\u00cc\u00ff"+
-		"\u0134\u0140\u0147\u0151\u016c\u0172\u0177\u0199\u01a1\u01aa\u01ac\u01b4"+
-		"\u01b7";
+		"\u01a3\3\2\2\2\u018d\u018e\f\25\2\2\u018e\u018f\7\35\2\2\u018f\u01a3\7"+
+		"(\2\2\u0190\u0191\f\24\2\2\u0191\u0192\7\35\2\2\u0192\u01a3\7\67\2\2\u0193"+
+		"\u0194\f\23\2\2\u0194\u0195\7\35\2\2\u0195\u0196\7\67\2\2\u0196\u01a3"+
+		"\7)\2\2\u0197\u0198\f\22\2\2\u0198\u0199\7\35\2\2\u0199\u019a\7\67\2\2"+
+		"\u019a\u01a3\7*\2\2\u019b\u019c\f\21\2\2\u019c\u019d\7\35\2\2\u019d\u019e"+
+		"\7\67\2\2\u019e\u019f\7\t\2\2\u019f\u01a0\5\62\32\2\u01a0\u01a1\7\r\2"+
+		"\2\u01a1\u01a3\3\2\2\2\u01a2\u0179\3\2\2\2\u01a2\u017c\3\2\2\2\u01a2\u017f"+
+		"\3\2\2\2\u01a2\u0182\3\2\2\2\u01a2\u0185\3\2\2\2\u01a2\u0188\3\2\2\2\u01a2"+
+		"\u018d\3\2\2\2\u01a2\u0190\3\2\2\2\u01a2\u0193\3\2\2\2\u01a2\u0197\3\2"+
+		"\2\2\u01a2\u019b\3\2\2\2\u01a3\u01a6\3\2\2\2\u01a4\u01a2\3\2\2\2\u01a4"+
+		"\u01a5\3\2\2\2\u01a5\61\3\2\2\2\u01a6\u01a4\3\2\2\2\u01a7\u01ac\5\60\31"+
+		"\2\u01a8\u01a9\7\21\2\2\u01a9\u01ab\5\60\31\2\u01aa\u01a8\3\2\2\2\u01ab"+
+		"\u01ae\3\2\2\2\u01ac\u01aa\3\2\2\2\u01ac\u01ad\3\2\2\2\u01ad\u01b0\3\2"+
+		"\2\2\u01ae\u01ac\3\2\2\2\u01af\u01a7\3\2\2\2\u01af\u01b0\3\2\2\2\u01b0"+
+		"\63\3\2\2\2\378>Q[dfr~\u0088\u0092\u0095\u00a0\u00a6\u00b1\u00c4\u00c8"+
+		"\u00cc\u00ff\u0134\u0140\u0147\u0151\u016c\u0172\u0177\u01a2\u01a4\u01ac"+
+		"\u01af";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

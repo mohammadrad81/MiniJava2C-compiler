@@ -495,6 +495,13 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAddSubExpression(MiniJavaParser.AddSubExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ArrayMemberExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayMemberExpression(MiniJavaParser.ArrayMemberExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ThisExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -564,13 +571,6 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNewIntArrayExpression(MiniJavaParser.NewIntArrayExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ArrayAccessExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayAccessExpression(MiniJavaParser.ArrayAccessExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FalseExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
