@@ -729,6 +729,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitNewObjectExpression(MiniJavaParser.NewObjectExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code NullExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterNullExpression(MiniJavaParser.NullExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NullExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitNullExpression(MiniJavaParser.NullExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code FieldExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -837,18 +849,6 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 */
 	void exitIdExpression(MiniJavaParser.IdExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ArrayLengthExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayLengthExpression(MiniJavaParser.ArrayLengthExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ArrayLengthExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayLengthExpression(MiniJavaParser.ArrayLengthExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ParenExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -860,6 +860,18 @@ public interface MiniJavaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParenExpression(MiniJavaParser.ParenExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CastExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterCastExpression(MiniJavaParser.CastExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CastExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitCastExpression(MiniJavaParser.CastExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code NewIntArrayExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.

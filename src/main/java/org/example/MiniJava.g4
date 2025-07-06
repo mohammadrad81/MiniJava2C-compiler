@@ -79,7 +79,7 @@ assign
     ;
 
 variableMulDivModAddSubAssign
-    : ID op=('*' | '/' | '%' | '+' | '-')'=' expression                     # VariableMulDivModAddAssignment
+    : ID op=('*=' | '/=' | '%=' | '+=' | '-=') expression                     # VariableMulDivModAddAssignment
     ;
 
 
@@ -88,11 +88,11 @@ fieldAssign
     ;
 
 fieldMulDivModAddSubAssign
-    : fieldHaver=expression '.' ID op=('*=' | '/=' | '%=' | '+=' | '-=' | '=') value=expression  # FieldMulDivModAddSubAssignment
+    : fieldHaver=expression '.' ID op=('*=' | '/=' | '%=' | '+=' | '-=') value=expression  # FieldMulDivModAddSubAssignment
     ;
 
 arrayMemberMulDivModAddSubAssign
-    : array=expression '[' index=expression ']' op=('*' | '/' | '%' | '+' | '-')'=' value=expression # ArrayMemberMulDivModAddSubAssignment
+    : array=expression '[' index=expression ']' op=('*=' | '/=' | '%=' | '+=' | '-=' | '=') value=expression # ArrayMemberMulDivModAddSubAssignment
     ;
 
 forInit
@@ -145,7 +145,7 @@ expression
     | (ID op=('++' | '--') | op=('++' | '--') ID)                # IdIncrementDecrementExpression // done
     | INTEGER                                                    # IntegerExpression //done
     | value=('true' | 'false')                                   # TrueFalseExpression //done
-    | 'null'                                                     # NullExpression
+    | 'null'                                                     # NullExpression // done
     | '(' ID ')' expression                                      # CastExpression
     ;
 

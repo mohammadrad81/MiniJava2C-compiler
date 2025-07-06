@@ -43,6 +43,13 @@ public class Symbol {
         this.kind = kind;
     }
 
+    public boolean isObject(){
+        if(this.getJavaType().equals("int") || this.getJavaType().equals("boolean")){
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

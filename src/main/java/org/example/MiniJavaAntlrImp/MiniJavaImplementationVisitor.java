@@ -621,6 +621,11 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 if(doesExtend(expressionAttributeContainer.getJavaType(), resolvedVariable.getSymbol().getJavaType())){
                     cast = "(" + MiniJavaToCTypeConvertor.convert(resolvedVariable.getSymbol().getJavaType()) + ") ";
                 }
+                else if(
+                        resolvedVariable.getSymbol().isObject() && expressionAttributeContainer.getJavaType().equals("null")
+                ){
+                    // do nothing, everything is ok
+                }
                 else{
                     errorHandler.error(ctx.start,
                             " assigning value of type: "
@@ -654,7 +659,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             errorHandler.error(ctx.expression().start,
                     "operation '"
                             + ctx.op.getText()
-                            + "=' is only applicable for int expressions, but its type is: "
+                            + "' is only applicable for int expressions, but its type is: "
                             + expressionAttributeContainer.getJavaType()
             );
         }
@@ -662,14 +667,14 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             errorHandler.error((Token) ctx.ID(),
                     "operation '"
                             + ctx.op.getText()
-                            + "=' is only applicable for int variables, but its type is:"
+                            + "' is only applicable for int variables, but its type is:"
                             + resolvedVariable.getSymbol().getJavaType()
             );
             result.setCode(
                     ctx.ID().getText()
                             + " "
                             + ctx.op.getText()
-                            + "= "
+                            + " "
                             + expressionAttributeContainer.getAddress()
                             + ";\n"
             );
@@ -711,6 +716,11 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 if(!valueAttributeContainer.getJavaType().equals(resolvedField.getSymbol().getJavaType())){
                     if(doesExtend(valueAttributeContainer.getJavaType(), resolvedField.getSymbol().getJavaType())){
                         cast = "(" + MiniJavaToCTypeConvertor.convert(resolvedField.getSymbol().getJavaType()) + ") ";
+                    }
+                    else if(
+                        resolvedField.getSymbol().isObject() && valueAttributeContainer.getJavaType().equals("null")
+                    ){
+                        // do nothing, everything is ok
                     }
                     else{
                         errorHandler.error(ctx.start,
@@ -766,20 +776,20 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 if(!valueAttributeContainer.getJavaType().equals("int")){
                     errorHandler.error("operation '"
                                         + ctx.op.getText()
-                                        + "=' is only applicable for int expressions, but its type is:"
+                                        + "' is only applicable for int expressions, but its type is:"
                                         + valueAttributeContainer.getJavaType());
                 }
                 else if(!resolvedField.getSymbol().getJavaType().equals("int")){
                     errorHandler.error("operation '"
                             + ctx.op.getText()
-                            + "=' is only applicable for int variables, but its type is:"
+                            + "' is only applicable for int variables, but its type is:"
                             + resolvedField.getSymbol().getJavaType());
                 }
                 else{
                     result.appendToCode(
                             fieldHaverAttributeContainer.getAddress()
                                     + resolvedField.getAccessCode()
-                                    + " = "
+                                    + ctx.op.getText()
                                     + valueAttributeContainer.getAddress()
                     );
                 }
@@ -1592,6 +1602,25 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         );
         result.setcType("bool");
         result.setJavaType("boolean");
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitNullExpression(MiniJavaParser.NullExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "void* "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = NULL;\n"
+        );
+        result.setJavaType("null");
+        result.setcType("void*");
+        result.setAddress(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+        );
         return result;
     }
 
