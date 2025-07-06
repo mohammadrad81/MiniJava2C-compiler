@@ -17,10 +17,7 @@ public class Main {
         String program = """
 public class Main{
     public static void main(String[] args){
-    int i = 0;
-    boolean b1 = false;
-    boolean b2 = true;
-    boolean b = b1 && b2;
+    int[] a = new int[10];
     }
 }
 """;

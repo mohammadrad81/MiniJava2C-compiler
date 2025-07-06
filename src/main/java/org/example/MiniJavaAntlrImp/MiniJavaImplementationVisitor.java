@@ -1035,6 +1035,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         );
         result.setJavaType("int[]");
         result.setcType("struct int_array*");
+        result.setAddress(
+                tempVariablePrefix + tempIntGenerator.getCurrent()
+        );
         return result;
     }
 
