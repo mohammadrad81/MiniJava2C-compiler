@@ -5,7 +5,6 @@ import java.util.List;
 
 public class AttributeContainer {
     private String code = "";
-    private String mainCode = "";
     private String structDefinitionCode = "";
     private String constructorsCode = "";
     private String methodsCode = "";
@@ -133,13 +132,6 @@ public class AttributeContainer {
         this.javaTypeList = javaTypeList;
     }
 
-    public String getMainCode() {
-        return mainCode;
-    }
-
-    public void setMainCode(String mainCode) {
-        this.mainCode = mainCode;
-    }
 
     public List<String> getParameterList() {
         return parameterList;
@@ -155,5 +147,12 @@ public class AttributeContainer {
 
     public void setArgumentList(List<AttributeContainer> argumentList) {
         this.argumentList = argumentList;
+    }
+
+    public boolean isObject(){
+        if(this.getJavaType().equals("int") || this.getJavaType().equals("boolean")){
+            return false;
+        }
+        return true;
     }
 }

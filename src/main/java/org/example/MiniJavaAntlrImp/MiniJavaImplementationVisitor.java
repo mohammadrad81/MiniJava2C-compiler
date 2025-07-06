@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.example.MiniJavaAntlr.MiniJavaBaseVisitor;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 
+import javax.management.Attribute;
+import java.net.IDN;
 import java.util.*;
 
 public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<AttributeContainer> {
@@ -151,7 +153,23 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             result.appendToCode(classAttributeContainer.getCode());
         }
         AttributeContainer mainAttributeContainer = visit(ctx.mainClass());
-        result.setMainCode(mainAttributeContainer.getMainCode());
+        result.appendToCode(mainAttributeContainer.getCode());
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitMainClassDeclaration(MiniJavaParser.MainClassDeclarationContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        currentEnvironment = new Environment(currentEnvironment);
+        result.appendToCode("int main(){\n");
+        for(MiniJavaParser.StatementContext statementContext: ctx.statement()){
+            AttributeContainer statementAttributeContainer = visit(statementContext);
+            result.appendToCode(
+                    statementAttributeContainer.getCode()
+            );
+        }
+        result.appendToCode("return 0;\n}\n");
+        currentEnvironment = currentEnvironment.getParent();
         return result;
     }
 
@@ -1535,7 +1553,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             errorHandler.error((Token) ctx.ID(), "class " + ctx.ID().getText() + " not defined and can not be used to cast");
         }
 
-        if(
+        else if(
                 expressionAttributeContainer.getJavaType().isEmpty() ||
                         expressionAttributeContainer.getJavaType().equals("int") ||
                         expressionAttributeContainer.getJavaType().equals("boolean") ||
@@ -1544,6 +1562,20 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         ){
             errorHandler.error(ctx.expression().start, "expressions of type '"
             + expressionAttributeContainer.getJavaType() + "' can not be casted");
+        }
+
+        else if(
+                (!expressionAttributeContainer.getJavaType().equals("null")) &&
+                        (!doesExtend(expressionAttributeContainer.getJavaType(), ctx.ID().getText())) &&
+                        (!doesExtend(ctx.ID().getText(), expressionAttributeContainer.getJavaType()))
+        ){
+            errorHandler.error(
+                    (Token) ctx.ID(),
+                    "objects of type "
+                            + expressionAttributeContainer.getJavaType()
+                            + " can not cast to type "
+                            + ctx.ID().getText()
+            );
         }
 
         String cType = MiniJavaToCTypeConvertor.convert(ctx.ID().getText());
@@ -1566,6 +1598,76 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 tempVariablePrefix
                         + tempIntGenerator.getCurrent()
         );
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitCompareExpression(MiniJavaParser.CompareExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer leftAttributeContainer = visit(ctx.leftSide);
+        AttributeContainer rightAttributeContainer = visit(ctx.rightSide);
+        result.appendToCode(leftAttributeContainer.getCode());
+        result.appendToCode(rightAttributeContainer.getCode());
+        if(
+                ctx.op.getText().equals(">") ||
+                        ctx.op.getText().equals(">=") ||
+                        ctx.op.getText().equals(">") ||
+                        ctx.op.getText().equals(">=")
+        ){
+            if(!leftAttributeContainer.getJavaType().equals("int")){
+                errorHandler.error(
+                        ctx.leftSide.start,
+                        "comparison operation '"
+                                + ctx.op.getText()
+                                + "' is only applicable on integers, but it is of type: "
+                                + leftAttributeContainer.getJavaType()
+                );
+            }
+            if(!rightAttributeContainer.getJavaType().equals("int")){
+                errorHandler.error(
+                        ctx.rightSide.start,
+                        "comparison operation '"
+                                + ctx.op.getText()
+                                + "' is only applicable on integers, but it is of type: "
+                                + rightAttributeContainer.getJavaType()
+                );
+            }
+        }
+
+        else{ // == or !=
+            if(
+                    (!leftAttributeContainer.getJavaType().equals(rightAttributeContainer.getJavaType())) &&
+                            (!leftAttributeContainer.getJavaType().equals("null")) &&
+                            (!rightAttributeContainer.getJavaType().equals("null")) &&
+                            (!doesExtend(rightAttributeContainer.getJavaType(), leftAttributeContainer.getJavaType())) &&
+                            (!doesExtend(leftAttributeContainer.getJavaType(), rightAttributeContainer.getJavaType()))
+            ){
+                errorHandler.error(
+                        "objects of type "
+                                + rightAttributeContainer.getJavaType()
+                                + " can not get compared to objects of type "
+                                + leftAttributeContainer.getJavaType()
+                );
+            }
+        }
+
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "boolean "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + leftAttributeContainer.getAddress()
+                        + " "
+                        + ctx.op.getText()
+                        + " "
+                        + rightAttributeContainer.getAddress()
+        );
+        result.setAddress(
+                tempVariablePrefix + tempIntGenerator.getCurrent()
+        );
+        result.setJavaType("boolean");
+        result.setcType("bool");
         return result;
     }
 
