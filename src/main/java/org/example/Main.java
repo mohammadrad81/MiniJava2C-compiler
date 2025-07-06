@@ -17,26 +17,13 @@ public class Main {
         String program = """
 public class Main{
     public static void main(String[] args){
-        Dog dog = new Dog(1);
-        System.out.println(dog.getId());
+    int i = 0;
+    boolean b1 = false;
+    boolean b2 = true;
+    boolean b = b1 && b2;
     }
 }
-
-class Animal{
-    int x;
-    int[] y;
-    public void sing(){
-        System.out.println(1);
-    }
-}
-
-class Dog extends Animal{
-    int x;
-    Animal animal;
-    public Animal sayHello(int t){
-        return this.animal;
-    }
-}""";
+""";
 
         ANTLRInputStream input = new ANTLRInputStream(program);
         MiniJavaLexer lexer = new MiniJavaLexer(input);
@@ -53,8 +40,15 @@ class Dog extends Animal{
         Map<String, Environment> classEnvironments = classEnvironmentVisitor.getClassEnvironments();
         MiniJavaDeclarationsVisitor declarationVisitor = new MiniJavaDeclarationsVisitor();
         declarationVisitor.setClassEnvironments(classEnvironments);
-        AttributeContainer container = declarationVisitor.visit(tree);
-        System.out.println(container.getCode());
+        AttributeContainer declarationAttributeContainer = declarationVisitor.visit(tree);
+        classEnvironments = declarationVisitor.getClassEnvironments();
+        ErrorHandler errorHandler = declarationVisitor.getErrorHandler();
+        MiniJavaImplementationVisitor miniJavaImplementationVisitor = new MiniJavaImplementationVisitor(classEnvironments, errorHandler);
+        AttributeContainer implementationAttributeContainer = miniJavaImplementationVisitor.visit(tree);
+        System.out.println(declarationAttributeContainer.getCode());
+        System.out.println(implementationAttributeContainer.getCode());
+
+
     }
 
 

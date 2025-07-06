@@ -77,7 +77,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             }
             if(environment.containsSymbolName(variableName)){
                 resolvation = new Resolvation<>(
-                        prefix + "->" + variableName,
+                        prefix + variableName,
                         environment.getSymbol(variableName)
                 );
                 break;
