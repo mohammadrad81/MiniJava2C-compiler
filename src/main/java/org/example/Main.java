@@ -17,12 +17,31 @@ public class Main {
         String program = """
 public class Main{
     public static void main(String[] args){
-        int[] a = null;
+        B b = new B();
+        b.hello();
+        
+//        C c = new C();
+//        c.hello();
     }
 }
 
 class A{
-    int x ;
+    int x;
+    public int hello(){
+        System.out.println(1);
+    }
+}
+//
+class B extends A{
+    public int hello(){
+        System.out.println(2);
+    }
+}
+//
+class C extends B{
+    public int hello(){
+        System.out.println(3);
+    }
 }
 
 """;

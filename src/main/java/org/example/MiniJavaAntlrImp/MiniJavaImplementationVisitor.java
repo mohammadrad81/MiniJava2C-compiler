@@ -98,7 +98,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         for(environment = javaClassEnvironment; environment != null; environment = environment.getParent()){
             if(environment.containsSymbolName(fieldName)){
                 resolvation = new Resolvation<>(
-                        postfix + "->" + fieldName,
+                        "->" + postfix + fieldName,
                         environment.getSymbol(fieldName)
                 );
                 break;
@@ -123,7 +123,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         for(environment = javaClassEnvironment; environment != null; environment = environment.getParent()){
             if(environment.containsMethodSignature(signature)){
                 resolvation = new Resolvation<>(
-                        postfix + "->function_" +methodName,
+                        "->" + postfix + "function_" +methodName,
                         (MethodSymbol) environment.getSymbol(signature)
                 );
                 break;
@@ -134,7 +134,6 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     private boolean doesExtend(String childClassName, String parentClassName){
-        boolean extend = false;
         Environment childEnvironment = this.classEnvironments.get(childClassName);
         Environment parentEnvironment = this.classEnvironments.get(parentClassName);
         for(Environment environment = childEnvironment; environment != null; environment = environment.getParent()){
@@ -274,13 +273,13 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 .append(currentClass)
                 .append(" = (struct ")
                 .append(currentClass)
-                .append("*) caller;");
+                .append("*) caller;\n");
         for(MiniJavaParser.StatementContext statementContext: ctx.statement()){
             AttributeContainer statementAttributeContainer = visit(statementContext);
-            methodCode.append("\n");
+//            methodCode.append("\n");
             methodCode.append(statementAttributeContainer.getCode());
         }
-        methodCode.append("\n}\n");
+        methodCode.append("}\n");
         currentEnvironment = currentEnvironment.getParent();
         result.setcType(returnCType);
         result.setJavaType(returnJavaType);
@@ -1083,7 +1082,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + tempIntGenerator.getCurrent()
         );
         result.setJavaType(ctx.ID().getText());
-        result.setJavaType(
+        result.setcType(
                 "struct "
                         + ctx.ID().getText()
                         + "*"

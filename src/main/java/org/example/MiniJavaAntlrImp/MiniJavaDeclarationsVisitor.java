@@ -105,7 +105,7 @@ struct int_array* new_int_array(int size){
                         + ctx.className.getText()
                         +"{"
                         + superFieldText
-                        + "\n\n//fields"
+                        + "\n//fields"
         );
         AttributeContainer classBodyAttributeContainer = visit(ctx.classBody());
         result.appendToStructDefinitionCode(

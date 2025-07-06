@@ -72,10 +72,10 @@ public class Environment {
         Environment environment = this.parent;
         for(int counter = 1; environment != null; environment = environment.parent){
             if(environment.isClassEnvironment()){
-                counter++;
                 if(environment.containsMethodSignature(methodSymbol.getSignature())){
                     result.add(counter);
                 }
+                counter++;
             }
         }
         return result;
