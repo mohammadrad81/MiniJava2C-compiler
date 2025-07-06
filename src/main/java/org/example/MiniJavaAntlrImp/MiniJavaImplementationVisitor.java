@@ -2,6 +2,7 @@ package org.example.MiniJavaAntlrImp;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.example.MiniJavaAntlr.MiniJavaBaseVisitor;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 
@@ -16,9 +17,11 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     private IntGenerator whileIntGenerator;
     private IntGenerator doWhileIntGenerator;
     private IntGenerator forIntGenerator;
+    private IntGenerator tempIntGenerator;
     private Stack<LoopLabelTuple> loopLabels;
     private MethodSymbol currentMethod;
     private static final String superDot = "super.";
+    private static final String tempVariablePrefix = "temp_var_";
 
     public MiniJavaImplementationVisitor(Map<String, Environment> classEnvironments,
                                          ErrorHandler errorHandler) {
@@ -28,6 +31,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         this.whileIntGenerator = new IntGenerator();
         this.doWhileIntGenerator = new IntGenerator();
         this.forIntGenerator = new IntGenerator();
+        this.tempIntGenerator = new IntGenerator();
         this.loopLabels = new Stack<>();
 
     }
@@ -82,8 +86,12 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
 
     private Resolvation<Symbol> resolveField(String fieldName, String javaClass){
         Resolvation<Symbol> resolvation = null;
+        if(!classEnvironments.containsKey(javaClass)){
+            errorHandler.error("no class with name: " + javaClass);
+            return resolvation;
+        }
         Environment javaClassEnvironment = classEnvironments.get(javaClass);
-        String postfix = "";
+        StringBuilder postfix = new StringBuilder();
         Environment environment;
         for(environment = javaClassEnvironment; environment != null; environment = environment.getParent()){
             if(environment.containsSymbolName(fieldName)){
@@ -93,6 +101,32 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 );
                 break;
             }
+            postfix.append(superDot);
+        }
+        return resolvation;
+    }
+
+    private Resolvation<MethodSymbol> resolveMethod(String methodName,
+                                                    String javaClass,
+                                                    List<String> argumentsJavaTypes){
+        Resolvation<MethodSymbol> resolvation = null;
+        if(!classEnvironments.containsKey(javaClass)){
+            errorHandler.error("no class with name: " + javaClass);
+            return null;
+        }
+        StringBuilder postfix = new StringBuilder();
+        Environment environment;
+        Environment javaClassEnvironment = classEnvironments.get(javaClass);
+        String signature = MethodSymbol.getSignatureToResolve(methodName, argumentsJavaTypes);
+        for(environment = javaClassEnvironment; environment != null; environment = environment.getParent()){
+            if(environment.containsMethodSignature(signature)){
+                resolvation = new Resolvation<>(
+                        postfix + "->function_" +methodName,
+                        (MethodSymbol) environment.getSymbol(signature)
+                );
+                break;
+            }
+            postfix.append(superDot);
         }
         return resolvation;
     }
@@ -142,12 +176,29 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + currentClass
                         + "(){\n"
         );
+        result.appendToConstructorCodes(
+                "struct "
+                        + currentClass
+                        + "* "
+                        + "instance_"
+                        + currentClass
+                        + " = "
+                        + "malloc(sizeof(struct "
+                        + currentClass
+                        + "));\n"
+
+
+        );
         for(MiniJavaParser.MethodDeclarationContext methodDeclarationContext: ctx.methodDeclaration()){
             AttributeContainer methodAttributeContainer = visit(methodDeclarationContext);
             result.appendToConstructorCodes(methodAttributeContainer.getConstructorsCode());
             result.appendToMethodsCode(methodAttributeContainer.getMethodsCode());
         }
-
+        result.appendToConstructorCodes(
+                "return instance_"
+                        + currentClass
+                        + ";\n"
+        );
         result.appendToConstructorCodes("}\n");
         result.setCode(result.getConstructorsCode() + result.getMethodsCode());
         return result;
@@ -224,7 +275,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         supersThatMethodOverrides.addFirst(0); // add for current class too
         for(int superIndex: supersThatMethodOverrides){
             result.appendToConstructorCodes(
-                    "instance"
+                    "instance_"
                             + currentClass
                             + "->"
                             + superDot.repeat(Math.max(0, superIndex))
@@ -393,6 +444,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     @Override
     public AttributeContainer visitBreakStatement(MiniJavaParser.BreakStatementContext ctx) {
         AttributeContainer result = new AttributeContainer();
+        if(loopLabels.empty()){
+            errorHandler.error(ctx.start, "break statement must be in a loop");
+        }
         result.setCode(
                 "goto "
                         + loopLabels.peek().getLoopEndLabel()
@@ -404,6 +458,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     @Override
     public AttributeContainer visitContinueStatement(MiniJavaParser.ContinueStatementContext ctx) {
         AttributeContainer result = new AttributeContainer();
+        if(loopLabels.empty()){
+            errorHandler.error(ctx.start, "continue statement must be in a loop");
+        }
         result.setCode(
                 "goto "
                 + loopLabels.peek().getLoopStartLabel()
@@ -519,6 +576,36 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         return result;
     }
 
+    public AttributeContainer visitVariableToAssign(TerminalNode ID){
+        AttributeContainer result = new AttributeContainer();
+        Resolvation<Symbol> resolvedVariable = resolveVariable(ID.getText());
+        if(resolvedVariable == null) {
+            errorHandler.error((Token) ID, "variable " + ID.getText() + " not defined");
+        }
+        else{
+            result.setJavaType(resolvedVariable.getSymbol().getJavaType());
+            result.setcType(resolvedVariable.getSymbol().getcType());
+            result.setAddress(resolvedVariable.getAccessCode());
+        }
+        return result;
+
+    }
+
+    public AttributeContainer visitVariableAsExpression(TerminalNode ID){
+        AttributeContainer result = visitVariableToAssign(ID);
+        tempIntGenerator.generate();
+        result.appendToCode(
+                result.getcType()
+                + " "
+                + tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+                + " = "
+                + result.getAddress()
+                + ";\n"
+        );
+        return result;
+    }
+
     @Override
     public AttributeContainer visitAssignment(MiniJavaParser.AssignmentContext ctx) {
         AttributeContainer result = new AttributeContainer();
@@ -526,7 +613,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         Resolvation<Symbol> resolvedVariable = resolveVariable(ctx.ID().getText());
         result.appendToCode(expressionAttributeContainer.getCode());
         if(resolvedVariable == null){
-            errorHandler.error(ctx.start, " variable " + ctx.ID().getText() + " not resolved");
+            errorHandler.error(ctx.start, " variable " + ctx.ID().getText() + " not defined");
         }
         else{
             String cast = "";
@@ -636,8 +723,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 }
                 result.appendToCode(
                         fieldHaverAttributeContainer.getAddress()
-                        + "->"
-                        + ctx.ID().getText()
+                        + resolvedField.getAccessCode()
                         + " = "
                         + cast
                         + valueAttributeContainer.getAddress()
@@ -692,8 +778,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 else{
                     result.appendToCode(
                             fieldHaverAttributeContainer.getAddress()
-                                    + "->"
-                                    + ctx.ID().getText()
+                                    + resolvedField.getAccessCode()
                                     + " = "
                                     + valueAttributeContainer.getAddress()
                     );
@@ -704,73 +789,22 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     @Override
-    public AttributeContainer visitArrayMemberAssignment(MiniJavaParser.ArrayMemberAssignmentContext ctx) {
-        AttributeContainer result = new AttributeContainer();
-        AttributeContainer arrayAttributeContainer = visit(ctx.array);
-        AttributeContainer indexAttributeContainer = visit(ctx.index);
-        AttributeContainer valueAttributeContainer = visit(ctx.value);
-        if(!arrayAttributeContainer.getJavaType().equals("int[]")){
-            errorHandler.error(ctx.array,
-                    " only objects of type int[] can be indexed, its type is: "
-                            + arrayAttributeContainer.getJavaType());
-        }
-        if(!indexAttributeContainer.getJavaType().equals("int")){
-            errorHandler.error(ctx.index,
-                    "indices must be of type int, but its type is: "
-                            + indexAttributeContainer.getJavaType());
-        }
-        if(!valueAttributeContainer.getJavaType().equals("int")){
-            errorHandler.error(ctx.value,
-                    "values to be assigned to an int array must be int, but its type is: "
-                            + valueAttributeContainer.getJavaType());
-        }
-        result.appendToCode(arrayAttributeContainer.getCode());
-        result.appendToCode(indexAttributeContainer.getCode());
-        result.appendToCode(valueAttributeContainer.getCode());
-        result.appendToCode(
-                arrayAttributeContainer.getAddress()
-                + "->data["
-                + indexAttributeContainer.getAddress()
-                + "] = "
-                + valueAttributeContainer.getAddress()
-                + ";\n"
-        );
-        return result;
-    }
-
-
-
-    @Override
     public AttributeContainer visitArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentContext ctx) {
         AttributeContainer result = new AttributeContainer();
-        AttributeContainer arrayAttributeContainer = visit(ctx.array);
-        AttributeContainer indexAttributeContainer = visit(ctx.index);
+        AttributeContainer arrayMemberAttributeContainer = visitArrayMemberToAssign(ctx.array, ctx.index);
         AttributeContainer valueAttributeContainer = visit(ctx.value);
-        if(!arrayAttributeContainer.getJavaType().equals("int[]")){
-            errorHandler.error(ctx.array,
-                    " only objects of type int[] can be indexed, its type is: "
-                            + arrayAttributeContainer.getJavaType());
-        }
-        if(!indexAttributeContainer.getJavaType().equals("int")){
-            errorHandler.error(ctx.index,
-                    "indices must be of type int, but its type is: "
-                            + indexAttributeContainer.getJavaType());
-        }
         if(!valueAttributeContainer.getJavaType().equals("int")){
             errorHandler.error(ctx.value,
                     "values to be assigned to an int array must be int, but its type is: "
                             + valueAttributeContainer.getJavaType());
         }
-        result.appendToCode(arrayAttributeContainer.getCode());
-        result.appendToCode(indexAttributeContainer.getCode());
+        result.appendToCode(arrayMemberAttributeContainer.getCode());
         result.appendToCode(valueAttributeContainer.getCode());
         result.appendToCode(
-                arrayAttributeContainer.getAddress()
-                        + "->data["
-                        + indexAttributeContainer.getAddress()
-                        + "] "
+                arrayMemberAttributeContainer.getAddress()
+                        + " "
                         + ctx.op.getText()
-                        + "= "
+                        + " "
                         + valueAttributeContainer.getAddress()
                         + ";\n"
         );
@@ -825,11 +859,6 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     @Override
-    public AttributeContainer visitArrayMemberAssignmentStatement(MiniJavaParser.ArrayMemberAssignmentStatementContext ctx) {
-        return visit(ctx.arrayMemberAssign());
-    }
-
-    @Override
     public AttributeContainer visitArrayMemberMulDivModAddSubAssignmentStatement(MiniJavaParser.ArrayMemberMulDivModAddSubAssignmentStatementContext ctx) {
         return visit(ctx.arrayMemberMulDivModAddSubAssign());
     }
@@ -865,11 +894,6 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             );
         }
         return result;
-    }
-
-    @Override
-    public AttributeContainer visitForInitPartArrayMemberAssignment(MiniJavaParser.ForInitPartArrayMemberAssignmentContext ctx) {
-        return visit(ctx.arrayMemberAssign());
     }
 
     @Override
@@ -925,11 +949,6 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     @Override
-    public AttributeContainer visitForUpdatePartArrayMemberAssignment(MiniJavaParser.ForUpdatePartArrayMemberAssignmentContext ctx) {
-        return visit(ctx.arrayMemberAssign());
-    }
-
-    @Override
     public AttributeContainer visitForUpdatePartArrayMemberMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartArrayMemberMulDivModAddSubAssignmentContext ctx) {
         return visit(ctx.arrayMemberMulDivModAddSubAssign());
     }
@@ -957,6 +976,623 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     @Override
     public AttributeContainer visitForUpdatePartVariableMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartVariableMulDivModAddSubAssignmentContext ctx) {
         return visit(ctx.variableMulDivModAddSubAssign());
+    }
+
+    @Override
+    public AttributeContainer visitParenExpression(MiniJavaParser.ParenExpressionContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public AttributeContainer visitNewIntArrayExpression(MiniJavaParser.NewIntArrayExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer expressionAttributeContainer = visit(ctx.expression());
+        if(!expressionAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(
+                    ctx.expression().start,
+                    "array size must be int, but its type is: "
+                            + expressionAttributeContainer.getJavaType()
+            );
+        }
+        result.appendToCode(expressionAttributeContainer.getCode());
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "struct int_array* "
+                    + tempVariablePrefix
+                    + tempIntGenerator.getCurrent()
+                    + " = "
+                    + "new_int_array("
+                    + expressionAttributeContainer.getAddress()
+                    + ");\n"
+        );
+        result.setJavaType("int[]");
+        result.setcType("struct int_array*");
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitNewObjectExpression(MiniJavaParser.NewObjectExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        if(!classEnvironments.containsKey(ctx.ID().getText())){
+            errorHandler.error(
+                    (Token) ctx.ID(),
+                    " no class named "
+                            + ctx.ID().getText()
+
+            );
+        }
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "struct "
+                        + ctx.ID().getText()
+                        + "* "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + "new_"
+                        + currentClass
+                        + "();\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+        );
+        result.setJavaType(ctx.ID().getText());
+        result.setJavaType(
+                "struct "
+                        + ctx.ID().getText()
+                        + "*"
+        );
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitFieldIncrementDecrementExpression(MiniJavaParser.FieldIncrementDecrementExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer fieldHaverAttributeContainer = visit(ctx.fieldHaver);
+        result.appendToCode(fieldHaverAttributeContainer.getCode());
+        if(fieldHaverAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.start, "int has no fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("int[]")){
+            errorHandler.error(ctx.start, "int[] objects have no assignable fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(ctx.start, "boolean has no fields");
+        }
+        else if(
+                classEnvironments.containsKey(fieldHaverAttributeContainer.getJavaType())
+        ){
+            Resolvation<Symbol> resolvedField = resolveField(ctx.ID().getText(), fieldHaverAttributeContainer.getJavaType());
+            if(resolvedField == null){
+                errorHandler.error((Token) ctx.ID(),
+                        "objects of type "
+                                + fieldHaverAttributeContainer.getJavaType()
+                                + " do not have field "
+                                + ctx.ID().getText()
+                );
+            }
+            else if(!resolvedField.getSymbol().getJavaType().equals("int")){
+                errorHandler.error((Token) ctx.ID(),
+                            "operation '"
+                                    + ctx.op.getText()
+                                    + "' is only applicable on integers, but it is of type: "
+                                    + resolvedField.getSymbol().getJavaType()
+                        );
+            }
+            else{
+                tempIntGenerator.generate();
+                result.setJavaType("int");
+                result.setcType("int");
+                result.appendToCode(
+                        fieldHaverAttributeContainer
+                        + resolvedField.getAccessCode()
+                        + ctx.op.getText()
+                        + ";\n"
+                );
+                result.appendToCode(
+                        tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + fieldHaverAttributeContainer
+                        + resolvedField.getAccessCode()
+                        + ";\n"
+
+                );
+            }
+        }
+        return result;
+    }
+
+
+    @Override
+    public AttributeContainer visitFieldExpression(MiniJavaParser.FieldExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer fieldHaverAttributeContainer = visit(ctx.fieldHaver);
+        result.appendToCode(fieldHaverAttributeContainer.getCode());
+        if(fieldHaverAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(ctx.start, "int has no fields");
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("int[]")){
+            if(ctx.ID().getText().equals("length")){
+                result.setJavaType("int");
+                result.setcType("int");
+                tempIntGenerator.generate();
+                result.appendToCode(
+                        tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + fieldHaverAttributeContainer.getAddress()
+                        + "->length;\n"
+                );
+                result.setAddress(
+                        tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                );
+            }
+            else{
+                errorHandler.error((Token) ctx.ID(), " int[] objects only have length field");
+            }
+
+        }
+        else if(fieldHaverAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(ctx.start, "boolean has no fields");
+        }
+        else if(
+                classEnvironments.containsKey(fieldHaverAttributeContainer.getJavaType())
+        ){
+            Resolvation<Symbol> resolvedField = resolveField(ctx.ID().getText(), fieldHaverAttributeContainer.getJavaType());
+            if(resolvedField == null){
+                errorHandler.error((Token) ctx.ID(),
+                        "objects of type "
+                                + fieldHaverAttributeContainer.getJavaType()
+                                + " do not have field "
+                                + ctx.ID().getText()
+                );
+            }
+            else{
+                tempIntGenerator.generate();
+                result.appendToCode(
+                             tempVariablePrefix
+                                     + tempIntGenerator.getCurrent()
+                                     + " = "
+                                     + fieldHaverAttributeContainer.getAddress()
+                                     + resolvedField.getAccessCode()
+                                     + ";\n"
+                );
+                result.setJavaType(resolvedField.getSymbol().getJavaType());
+                result.setcType(resolvedField.getSymbol().getcType());
+                result.setAddress(
+                        tempVariablePrefix
+                                + tempIntGenerator.getCurrent()
+                );
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitIdExpression(MiniJavaParser.IdExpressionContext ctx) {
+        return visitVariableAsExpression(ctx.ID());
+    }
+
+    @Override
+    public AttributeContainer visitIdIncrementDecrementExpression(MiniJavaParser.IdIncrementDecrementExpressionContext ctx) {
+        AttributeContainer result = visitVariableToAssign(ctx.ID());
+        if(!result.getJavaType().equals("int")){
+            errorHandler.error((Token) ctx.ID(),
+                    "operation '"
+                            + ctx.op.getText()
+                            + "' is applicable on int variables, but its type is: "
+                            + result.getJavaType()
+            );
+        }
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "int "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + ctx.op.getText()
+                        + result.getAddress()
+                        + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+        );
+        return result;
+    }
+
+    public AttributeContainer visitArrayMemberToAssign(MiniJavaParser.ExpressionContext arrayExpression,
+                                                       MiniJavaParser.ExpressionContext indexExpression){
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer arrayExpressionAttributeContainer = visit(arrayExpression);
+        AttributeContainer indexExpressionAttributeContainer = visit(indexExpression);
+        if(!arrayExpressionAttributeContainer.getJavaType().equals("int[]")){
+            errorHandler.error(
+                    arrayExpression.start,
+                    "is not of type int[] and can not be indexed, its type is: "
+                    + arrayExpressionAttributeContainer.getJavaType()
+            );
+        }
+        if(!indexExpressionAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(
+                    indexExpression.start,
+                    "index must be an int, but its type is: "
+                            + indexExpressionAttributeContainer.getJavaType()
+            );
+        }
+
+        result.appendToCode(
+                arrayExpressionAttributeContainer.getCode()
+        );
+        result.appendToCode(
+                indexExpressionAttributeContainer.getCode()
+        );
+        result.setJavaType("int");
+        result.setcType("int");
+        result.setAddress(
+                arrayExpressionAttributeContainer.getAddress()
+                        + "->data["
+                        + indexExpressionAttributeContainer.getAddress()
+                        + "]"
+        );
+        return result;
+    }
+
+    public AttributeContainer visitArrayMemberAsExpression(MiniJavaParser.ExpressionContext arrayExpression,
+                                                           MiniJavaParser.ExpressionContext indexExpression){
+        AttributeContainer result = visitArrayMemberToAssign(arrayExpression, indexExpression);
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "int "
+                     + tempVariablePrefix
+                     + tempIntGenerator.getCurrent()
+                     + " = "
+                     + result.getAddress()
+                     + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+        );
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitArrayMemberIncrementDecrementExpression(MiniJavaParser.ArrayMemberIncrementDecrementExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer arrayAttributeContainer = visitArrayMemberToAssign(ctx.array, ctx.index);
+        result.setJavaType("int");
+        result.setJavaType("int");
+        result.appendToCode(
+                arrayAttributeContainer.getCode()
+        );
+        result.appendToCode(
+                arrayAttributeContainer.getAddress()
+                + ctx.op.getText()
+                + ";\n"
+        );
+        tempIntGenerator.generate();
+        result.appendToCode(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+                + " = "
+                + arrayAttributeContainer.getAddress()
+        );
+
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitArrayMemberExpression(MiniJavaParser.ArrayMemberExpressionContext ctx) {
+        return visitArrayMemberAsExpression(ctx.array, ctx.index);
+    }
+
+    @Override
+    public AttributeContainer visitMethodCallExpression(MiniJavaParser.MethodCallExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer methodHaverAttributeContainer = visit(ctx.methodHaver);
+        AttributeContainer argumentListAttributeContainer = visit(ctx.argumentList());
+        result.appendToCode(methodHaverAttributeContainer.getCode());
+        result.appendToCode(argumentListAttributeContainer.getCode());
+
+        if (
+                methodHaverAttributeContainer.getJavaType().equals("int") ||
+                        methodHaverAttributeContainer.getJavaType().equals("boolean") ||
+                        methodHaverAttributeContainer.getJavaType().equals("void") ||
+                        methodHaverAttributeContainer.getJavaType().equals("int[]")
+        ) {
+            errorHandler.error(
+                    ctx.methodHaver.start,
+                    methodHaverAttributeContainer.getJavaType()
+                    + " has no methods"
+            );
+        }
+        else{
+            Resolvation<MethodSymbol> resolvedMethod = resolveMethod(
+                    ctx.ID().getText(),
+                    methodHaverAttributeContainer.getJavaType(),
+                    argumentListAttributeContainer.getJavaTypeList()
+            );
+            if(resolvedMethod == null){
+                errorHandler.error(
+                        methodHaverAttributeContainer.getJavaType()
+                        + " has no method with signature: "
+                        + MethodSymbol.getSignatureToResolve(ctx.ID().getText(), argumentListAttributeContainer.getJavaTypeList())
+                );
+                return result;
+            }
+            else{
+                tempIntGenerator.generate();
+                result.appendToCode(
+                        resolvedMethod.getSymbol().getcType()
+                                + tempVariablePrefix
+                                + tempIntGenerator.getCurrent()
+                                + " = "
+                                + methodHaverAttributeContainer.getAddress()
+                                + resolvedMethod.getAccessCode()
+                                + "("
+                                + methodHaverAttributeContainer.getAddress()
+                );
+                for(AttributeContainer argumentAttributeContainer: argumentListAttributeContainer.getArgumentList()){
+                    result.appendToCode(
+                            ", "
+                                    + argumentAttributeContainer.getAddress()
+                    );
+                }
+                result.appendToCode(");\n");
+                result.setJavaType(resolvedMethod.getSymbol().getJavaType());
+                result.setcType((resolvedMethod.getSymbol().getcType()));
+                result.setAddress(
+                        tempVariablePrefix
+                                + tempIntGenerator.getCurrent()
+                );
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitNotExpression(MiniJavaParser.NotExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer expressionAttributeContainer = visit(ctx.expression());
+        if(!expressionAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(
+                    ctx.expression().start,
+                    " ! operation is only applicable on boolean expressions"
+                    + " but its type is: "
+                    + expressionAttributeContainer.getJavaType()
+            );
+        }
+        tempIntGenerator.generate();
+        result.appendToCode(expressionAttributeContainer.getCode());
+        result.appendToCode(
+                "bool "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + "!"
+                        + expressionAttributeContainer.getAddress()
+                        + ";\n"
+        );
+        result.setJavaType("boolean");
+        result.setcType("bool");
+        result.setAddress(
+                tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+        );
+
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitMinusExpression(MiniJavaParser.MinusExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer expressionAttributeContainer = visit(ctx.expression());
+        if(!expressionAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(
+                    ctx.expression().start,
+                    " - operation is only applicable on int expressions"
+                            + " but its type is: "
+                            + expressionAttributeContainer.getJavaType()
+            );
+        }
+        tempIntGenerator.generate();
+        result.appendToCode(expressionAttributeContainer.getCode());
+        result.appendToCode(
+                "bool "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + "(-"
+                        + expressionAttributeContainer.getAddress()
+                        + ")"
+                        + ";\n"
+        );
+        result.setJavaType("boolean");
+        result.setcType("bool");
+        result.setAddress(
+                tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+        );
+
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitIntegerBinaryExpression(MiniJavaParser.IntegerBinaryExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer leftSideAttributeContainer = visit(ctx.leftSide);
+        AttributeContainer rightSideAttributeContainer = visit(ctx.rightSide);
+        if(!leftSideAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(
+                    ctx.leftSide,
+                            ctx.op.getText()
+                                    + " operation is only applicable on int expressions"
+                                    + " but its type is: "
+                                    + leftSideAttributeContainer.getJavaType()
+            );
+        }
+        if(!rightSideAttributeContainer.getJavaType().equals("int")){
+            errorHandler.error(
+                    ctx.rightSide,
+                    ctx.op.getText()
+                            +" operation is only applicable on int expressions"
+                            + " but its type is: "
+                            + rightSideAttributeContainer.getJavaType()
+            );
+        }
+        result.appendToCode(leftSideAttributeContainer.getCode());
+        result.appendToCode(rightSideAttributeContainer.getCode());
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "int "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + leftSideAttributeContainer.getAddress()
+                        + ctx.op.getText()
+                        + rightSideAttributeContainer.getAddress()
+                        +";\n"
+        );
+        result.setJavaType("int");
+        result.setcType("int");
+        result.setAddress(
+                tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+        );
+        return result;
+
+    }
+
+    @Override
+    public AttributeContainer visitBooleanExpression(MiniJavaParser.BooleanExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer leftSideAttributeContainer = visit(ctx.leftSide);
+        AttributeContainer rightSideAttributeContainer = visit(ctx.rightSide);
+        if(!leftSideAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(
+                    ctx.leftSide.start,
+                    "boolean operation "
+                            + ctx.op.getText()
+                            + " is only applicable on boolean expressions"
+                            + " but left side type is: "
+                            + leftSideAttributeContainer.getJavaType()
+            );
+        }
+        if(!rightSideAttributeContainer.getJavaType().equals("boolean")){
+            errorHandler.error(
+                    ctx.rightSide.start,
+                    "boolean operation "
+                            + ctx.op.getText()
+                            + " is only applicable on boolean expressions"
+                            + " but right side type is: "
+                            + rightSideAttributeContainer.getJavaType()
+            );
+        }
+        tempIntGenerator.generate();
+        result.appendToCode(leftSideAttributeContainer.getCode());
+        result.appendToCode(rightSideAttributeContainer.getCode());
+        result.appendToCode(
+                "bool "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + leftSideAttributeContainer.getAddress()
+                        + " "
+                        + ctx.op.getText()
+                        + " "
+                        + rightSideAttributeContainer.getAddress()
+                        + ";\n"
+        );
+        result.setJavaType("boolean");
+        result.setcType("bool");
+        result.setAddress(
+                tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+        );
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitThisExpression(MiniJavaParser.ThisExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "struct "
+                + currentClass
+                + "* "
+                + tempVariablePrefix
+                + tempIntGenerator
+                + " = "
+                + "caller_"
+                + currentClass
+                + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+        );
+        result.setcType("struct " + currentClass + "*");
+        result.setJavaType(currentClass);
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitArgumentListDeclar(MiniJavaParser.ArgumentListDeclarContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        for(MiniJavaParser.ExpressionContext expressionContext: ctx.expression()){
+            AttributeContainer expressionAttributeContainer = visit(expressionContext);
+            result.getArgumentList().add(expressionAttributeContainer);
+            result.appendToCode(expressionAttributeContainer.getCode());
+            result.getJavaTypeList().add(expressionAttributeContainer.getJavaType());
+            result.getcTypeList().add(expressionAttributeContainer.getcType());
+        }
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitIntegerExpression(MiniJavaParser.IntegerExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "int "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + ctx.INTEGER().getText()
+                        + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+        );
+        result.setcType("int");
+        result.setJavaType("int");
+        return result;
+    }
+
+    @Override
+    public AttributeContainer visitTrueFalseExpression(MiniJavaParser.TrueFalseExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        tempIntGenerator.generate();
+        result.appendToCode(
+                "bool "
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + ctx.value.getText()
+                        + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                + tempIntGenerator.getCurrent()
+        );
+        result.setcType("bool");
+        result.setJavaType("boolean");
+        return result;
     }
 
     @Override

@@ -36,6 +36,18 @@ public class MethodSymbol extends Symbol{
         return signature;
     }
 
+    public static String getSignatureToResolve(String methodName, List<String> parametersTypes){
+        String signature = methodName + "(";
+        for(int i = 0; i < parametersTypes.size(); i++){
+            signature += parametersTypes.get(i);
+            if(i != parametersTypes.size() - 1){
+                signature += ",";
+            }
+        }
+        signature += ")";
+        return signature;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

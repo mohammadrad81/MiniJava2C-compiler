@@ -59,7 +59,6 @@ statement
     | varDeclarAssign ';'                                                   # VariableDeclarationWithAssignmentStatement
     | assign ';'                                                            # VariableAssignmentStatement
     | fieldAssign ';'                                                       # FieldAssignmentStatement
-    | arrayMemberAssign ';'                                                 # ArrayMemberAssignmentStatement
     | variableMulDivModAddSubAssign ';'                                     # VariableMulDivModAddSubAssignmentStatement
     | fieldMulDivModAddSubAssign ';'                                        # FieldMulDivModAddSubAssignmentStatement
     | arrayMemberMulDivModAddSubAssign ';'                                  # ArrayMemberMulDivModAddSubAssignmentStatement
@@ -89,19 +88,12 @@ fieldAssign
     ;
 
 fieldMulDivModAddSubAssign
-    : fieldHaver=expression '.' ID op=('*' | '/' | '%' | '+' | '-')'=' value=expression  # FieldMulDivModAddSubAssignment
-    ;
-
-arrayMemberAssign
-    : array=expression '[' index=expression ']' '=' value=expression                          # ArrayMemberAssignment
+    : fieldHaver=expression '.' ID op=('*=' | '/=' | '%=' | '+=' | '-=' | '=') value=expression  # FieldMulDivModAddSubAssignment
     ;
 
 arrayMemberMulDivModAddSubAssign
     : array=expression '[' index=expression ']' op=('*' | '/' | '%' | '+' | '-')'=' value=expression # ArrayMemberMulDivModAddSubAssignment
     ;
-
-
-
 
 forInit
     : forInitPart (', ' forInitPart)*                                     # ForInitParts
@@ -114,7 +106,6 @@ forInitPart
     | variableMulDivModAddSubAssign                                         # ForInitPartVariableMulDivModAddSubAssignment
     | fieldAssign                                                           # ForInitPartFieldAssignment
     | fieldMulDivModAddSubAssign                                            # ForInitPartFieldMulDivModAddSubAssignment
-    | arrayMemberAssign                                                     # ForInitPartArrayMemberAssignment
     | arrayMemberMulDivModAddSubAssign                                      # ForInitPartArrayMemberMulDivModAddSubAssignment
     | expression                                                            # ForInitPartExpression
     ;
@@ -128,40 +119,38 @@ forUpdatePart
     | variableMulDivModAddSubAssign                                         # ForUpdatePartVariableMulDivModAddSubAssignment
     | fieldAssign                                                           # ForUpdatePartFieldAssignment
     | fieldMulDivModAddSubAssign                                            # ForUpdatePartFieldMulDivModAddSubAssignment
-    | arrayMemberAssign                                                     # ForUpdatePartArrayMemberAssignment
     | arrayMemberMulDivModAddSubAssign                                      # ForUpdatePartArrayMemberMulDivModAddSubAssignment
     | expression                                                            # ForUpdatePartExpression
     ;
 
 expression
-    : '(' expression ')'                                         # ParenExpression
-    | 'new' 'int' '[' expression ']'                             # NewIntArrayExpression
-    | 'new' ID '(' ')'                                           # NewObjectExpression
-    | array=expression '[' index=expression ']'                              # ArrayMemberExpression
-    | array=expression '[' index=expression ']' '++'                         # ArrayMemberIncrementExpression
-    | array=expression '.' 'length'                                    # ArrayLengthExpression
-    | fieldHaver=expression '.' ID                                          # FieldExpression
-    | fieldHaver=expression '.' ID '++'                                     # FieldIncrementExpression
-    | fieldHaver=expression '.' ID '--'                                     # FieldDecrementExpression
-    | fieldHaver=expression '.' ID '(' argumentList ')'                     # MethodCallExpression
-    | '!' expression                                             # NotExpression
-    | '-' expression                                             # MinusExpression
-    | leftSide=expression op=('*'|'/'|'%') rightSide=expression                     # MulDivModExpression
-    | leftSide=expression op=('+'|'-') rightSide=expression                         # AddSubExpression
+    : '(' expression ')'                                         # ParenExpression // done
+    | 'new' 'int' '[' expression ']'                             # NewIntArrayExpression //done
+    | 'new' ID '(' ')'                                           # NewObjectExpression //done
+    | array=expression '[' index=expression ']'                       # ArrayMemberExpression // done
+    | array=expression '[' index=expression ']' op=('++' | '--')      # ArrayMemberIncrementDecrementExpression //done
+    | op=('++' | '--') array=expression '[' index=expression ']'      # ArrayMemberIncrementDecrementExpression // done
+    | fieldHaver=expression '.' ID                                    # FieldExpression //done
+    | fieldHaver=expression '.' ID op=('++' | '--')                   # FieldIncrementDecrementExpression // done
+    | methodHaver=expression '.' ID '(' argumentList ')'              # MethodCallExpression // done
+    | '!' expression                                             # NotExpression // done
+    | '-' expression                                             # MinusExpression //done
+    | leftSide=expression op=('*'|'/'|'%') rightSide=expression                     # IntegerBinaryExpression // done
+    | leftSide=expression op=('+'|'-') rightSide=expression                         # IntegerBinaryExpression // done
     | leftSide=expression op=('<'|'<='|'>'|'>='|'=='|'!=') rightSide=expression     # CompareExpression
-    | leftSide=expression op='&&' rightSide=expression                              # AndExpression
-    | leftSide=expression op='||' rightSide=expression                              # OrExpression
-    | 'this'                                                     # ThisExpression
-    | ID                                                         # IdExpression
-    | (ID '++' | '++' ID)                                        # IdIncrementExpression
-    | (ID '--' | '--' ID)                                        # IdDecrementExpression
-    | INTEGER                                                    # IntegerExpression
-    | 'true'                                                     # TrueExpression
-    | 'false'                                                    # FalseExpression
+    | leftSide=expression op='&&' rightSide=expression                              # BooleanExpression //done
+    | leftSide=expression op='||' rightSide=expression                              # BooleanExpression //done
+    | 'this'                                                     # ThisExpression // done
+    | ID                                                         # IdExpression // done
+    | (ID op=('++' | '--') | op=('++' | '--') ID)                # IdIncrementDecrementExpression // done
+    | INTEGER                                                    # IntegerExpression //done
+    | value=('true' | 'false')                                   # TrueFalseExpression //done
+    | 'null'                                                     # NullExpression
+    | '(' ID ')' expression                                      # CastExpression
     ;
 
 argumentList
-    : (expression (',' expression)*)?                            # ArgumentListDeclar
+    : (expression (',' expression)*)?                            # ArgumentListDeclar // done
     ;
 
 // Lexer Rules

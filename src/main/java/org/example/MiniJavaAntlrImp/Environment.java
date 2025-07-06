@@ -59,7 +59,7 @@ public class Environment {
 
     public Symbol getSymbol(String name){
         for(Environment environment = this; environment != null; environment = environment.parent){
-            Symbol found = (Symbol) (environment.table.get(name));
+            Symbol found = (environment.table.get(name));
             if(found != null){
                 return found;
             }

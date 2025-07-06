@@ -3,6 +3,7 @@ package org.example;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.example.MiniJavaAntlr.MiniJavaBaseVisitor;
 import org.example.MiniJavaAntlr.MiniJavaLexer;
 import org.example.MiniJavaAntlr.MiniJavaParser;
 import org.example.MiniJavaAntlrImp.*;
@@ -54,8 +55,6 @@ class Dog extends Animal{
         declarationVisitor.setClassEnvironments(classEnvironments);
         AttributeContainer container = declarationVisitor.visit(tree);
         System.out.println(container.getCode());
-
-
     }
 
 

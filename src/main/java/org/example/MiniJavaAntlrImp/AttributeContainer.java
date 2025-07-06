@@ -14,7 +14,7 @@ public class AttributeContainer {
     private String cType = "";
     private List<String> cTypeList = new ArrayList<>();
     private List<String> javaTypeList = new ArrayList<>();
-    private List<String> argumentList = new ArrayList<>();
+    private List<AttributeContainer> argumentList = new ArrayList<>();
     private List<String> parameterList = new ArrayList<>();
 
     public static AttributeContainer appendCodes(List<AttributeContainer> attributeContainers){
@@ -141,19 +141,19 @@ public class AttributeContainer {
         this.mainCode = mainCode;
     }
 
-    public List<String> getArgumentList() {
-        return argumentList;
-    }
-
-    public void setArgumentList(List<String> argumentList) {
-        this.argumentList = argumentList;
-    }
-
     public List<String> getParameterList() {
         return parameterList;
     }
 
     public void setParameterList(List<String> parameterList) {
         this.parameterList = parameterList;
+    }
+
+    public List<AttributeContainer> getArgumentList() {
+        return argumentList;
+    }
+
+    public void setArgumentList(List<AttributeContainer> argumentList) {
+        this.argumentList = argumentList;
     }
 }

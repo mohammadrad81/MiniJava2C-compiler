@@ -194,13 +194,6 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFieldAssignmentStatement(MiniJavaParser.FieldAssignmentStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArrayMemberAssignmentStatement}
-	 * labeled alternative in {@link MiniJavaParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayMemberAssignmentStatement(MiniJavaParser.ArrayMemberAssignmentStatementContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code VariableMulDivModAddSubAssignmentStatement}
 	 * labeled alternative in {@link MiniJavaParser#statement}.
 	 * @param ctx the parse tree
@@ -278,13 +271,6 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFieldMulDivModAddSubAssignment(MiniJavaParser.FieldMulDivModAddSubAssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ArrayMemberAssignment}
-	 * labeled alternative in {@link MiniJavaParser#arrayMemberAssign}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayMemberAssignment(MiniJavaParser.ArrayMemberAssignmentContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ArrayMemberMulDivModAddSubAssignment}
 	 * labeled alternative in {@link MiniJavaParser#arrayMemberMulDivModAddSubAssign}.
 	 * @param ctx the parse tree
@@ -341,13 +327,6 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForInitPartFieldMulDivModAddSubAssignment(MiniJavaParser.ForInitPartFieldMulDivModAddSubAssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ForInitPartArrayMemberAssignment}
-	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitForInitPartArrayMemberAssignment(MiniJavaParser.ForInitPartArrayMemberAssignmentContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ForInitPartArrayMemberMulDivModAddSubAssignment}
 	 * labeled alternative in {@link MiniJavaParser#forInitPart}.
 	 * @param ctx the parse tree
@@ -397,13 +376,6 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForUpdatePartFieldMulDivModAddSubAssignment(MiniJavaParser.ForUpdatePartFieldMulDivModAddSubAssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ForUpdatePartArrayMemberAssignment}
-	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitForUpdatePartArrayMemberAssignment(MiniJavaParser.ForUpdatePartArrayMemberAssignmentContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ForUpdatePartArrayMemberMulDivModAddSubAssignment}
 	 * labeled alternative in {@link MiniJavaParser#forUpdatePart}.
 	 * @param ctx the parse tree
@@ -418,12 +390,19 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForUpdatePartExpression(MiniJavaParser.ForUpdatePartExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FieldDecrementExpression}
+	 * Visit a parse tree produced by the {@code IntegerBinaryExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFieldDecrementExpression(MiniJavaParser.FieldDecrementExpressionContext ctx);
+	T visitIntegerBinaryExpression(MiniJavaParser.IntegerBinaryExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArrayMemberIncrementDecrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayMemberIncrementDecrementExpression(MiniJavaParser.ArrayMemberIncrementDecrementExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code NotExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -439,33 +418,12 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntegerExpression(MiniJavaParser.IntegerExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FieldIncrementExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFieldIncrementExpression(MiniJavaParser.FieldIncrementExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code CompareExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCompareExpression(MiniJavaParser.CompareExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code OrExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOrExpression(MiniJavaParser.OrExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code MulDivModExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMulDivModExpression(MiniJavaParser.MulDivModExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code NewObjectExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -481,19 +439,12 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFieldExpression(MiniJavaParser.FieldExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code IdDecrementExpression}
+	 * Visit a parse tree produced by the {@code IdIncrementDecrementExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIdDecrementExpression(MiniJavaParser.IdDecrementExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code AddSubExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAddSubExpression(MiniJavaParser.AddSubExpressionContext ctx);
+	T visitIdIncrementDecrementExpression(MiniJavaParser.IdIncrementDecrementExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ArrayMemberExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -509,19 +460,12 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitThisExpression(MiniJavaParser.ThisExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code TrueExpression}
+	 * Visit a parse tree produced by the {@code BooleanExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTrueExpression(MiniJavaParser.TrueExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code AndExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAndExpression(MiniJavaParser.AndExpressionContext ctx);
+	T visitBooleanExpression(MiniJavaParser.BooleanExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code MethodCallExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -536,6 +480,13 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMinusExpression(MiniJavaParser.MinusExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FieldIncrementDecrementExpression}
+	 * labeled alternative in {@link MiniJavaParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldIncrementDecrementExpression(MiniJavaParser.FieldIncrementDecrementExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IdExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
@@ -558,20 +509,6 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParenExpression(MiniJavaParser.ParenExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code IdIncrementExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdIncrementExpression(MiniJavaParser.IdIncrementExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ArrayMemberIncrementExpression}
-	 * labeled alternative in {@link MiniJavaParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayMemberIncrementExpression(MiniJavaParser.ArrayMemberIncrementExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code NewIntArrayExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
@@ -579,12 +516,12 @@ public interface MiniJavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNewIntArrayExpression(MiniJavaParser.NewIntArrayExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FalseExpression}
+	 * Visit a parse tree produced by the {@code TrueFalseExpression}
 	 * labeled alternative in {@link MiniJavaParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFalseExpression(MiniJavaParser.FalseExpressionContext ctx);
+	T visitTrueFalseExpression(MiniJavaParser.TrueFalseExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ArgumentListDeclar}
 	 * labeled alternative in {@link MiniJavaParser#argumentList}.

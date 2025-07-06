@@ -1,20 +1,20 @@
 package org.example.MiniJavaAntlrImp;
 
 public class Resolvation<T extends Symbol>{
-    private String code;
+    private String accessCode;
     private T symbol;
 
-    public Resolvation(String code, T symbol) {
-        this.code = code;
+    public Resolvation(String accessCode, T symbol) {
+        this.accessCode = accessCode;
         this.symbol = symbol;
     }
 
-    public String getCode() {
-        return code;
+    public String getAccessCode() {
+        return accessCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setAccessCode(String accessCode) {
+        this.accessCode = accessCode;
     }
 
     public T getSymbol() {
