@@ -1527,6 +1527,49 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     @Override
+    public AttributeContainer visitCastExpression(MiniJavaParser.CastExpressionContext ctx) {
+        AttributeContainer result = new AttributeContainer();
+        AttributeContainer expressionAttributeContainer = visit(ctx.expression());
+        result.appendToCode(expressionAttributeContainer.getCode());
+        if(!classEnvironments.containsKey(ctx.ID().getText())){
+            errorHandler.error((Token) ctx.ID(), "class " + ctx.ID().getText() + " not defined and can not be used to cast");
+        }
+
+        if(
+                expressionAttributeContainer.getJavaType().isEmpty() ||
+                        expressionAttributeContainer.getJavaType().equals("int") ||
+                        expressionAttributeContainer.getJavaType().equals("boolean") ||
+                        expressionAttributeContainer.getJavaType().equals("void") ||
+                        expressionAttributeContainer.getJavaType().equals("int[]")
+        ){
+            errorHandler.error(ctx.expression().start, "expressions of type '"
+            + expressionAttributeContainer.getJavaType() + "' can not be casted");
+        }
+
+        String cType = MiniJavaToCTypeConvertor.convert(ctx.ID().getText());
+
+        result.setcType(cType);
+        result.setJavaType(ctx.ID().getText());
+        tempIntGenerator.generate();
+        result.appendToCode(
+                MiniJavaToCTypeConvertor.convert(ctx.ID().getText())
+                        + tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+                        + " = "
+                        + "("
+                        + cType
+                        + ") "
+                        + expressionAttributeContainer.getAddress()
+                        + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix
+                        + tempIntGenerator.getCurrent()
+        );
+        return result;
+    }
+
+    @Override
     public AttributeContainer visitThisExpression(MiniJavaParser.ThisExpressionContext ctx) {
         AttributeContainer result = new AttributeContainer();
         tempIntGenerator.generate();
