@@ -17,15 +17,14 @@ public class Main {
         String program = """
 public class Main{
     public static void main(String[] args){
-        int i = 0;
-        
-        while(i < 10){
-            i++;
-            break;
-        }
-        System.out.println(i);
+        int[] a = null;
     }
 }
+
+class A{
+    int x ;
+}
+
 """;
 
         ANTLRInputStream input = new ANTLRInputStream(program);

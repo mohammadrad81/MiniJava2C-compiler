@@ -175,9 +175,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
 
     @Override
     public AttributeContainer visitClassDeclar(MiniJavaParser.ClassDeclarContext ctx) {
-        AttributeContainer classBodyAttributeContainer = visit(ctx.classBody());
         currentClass = ctx.className.getText();
         currentEnvironment = classEnvironments.get(currentClass);
+        AttributeContainer classBodyAttributeContainer = visit(ctx.classBody());
         classBodyAttributeContainer.insertAtFirstOfCode("// class: " + ctx.className.getText() + "\n");
         classBodyAttributeContainer.appendToCode("\n");
         return classBodyAttributeContainer;
@@ -578,6 +578,11 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             if(doesExtend(expressionAttributeContainer.getJavaType(), typeAttributeContainer.getJavaType())){
                 cast = "(" + MiniJavaToCTypeConvertor.convert(typeAttributeContainer.getJavaType()) + ") ";
             }
+            else if(
+                    typeAttributeContainer.isObject() && expressionAttributeContainer.getJavaType().equals("null")
+            ){
+                // do nothing, everything is ok
+            }
             else{
                 errorHandler.error(ctx.start,
                         " assigning value of type: "
@@ -697,15 +702,15 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                             + "' is only applicable for int variables, but its type is:"
                             + resolvedVariable.getSymbol().getJavaType()
             );
-            result.setCode(
-                    ctx.ID().getText()
-                            + " "
-                            + ctx.op.getText()
-                            + " "
-                            + expressionAttributeContainer.getAddress()
-                            + ";\n"
-            );
         }
+        result.setCode(
+                ctx.ID().getText()
+                        + " "
+                        + ctx.op.getText()
+                        + " "
+                        + expressionAttributeContainer.getAddress()
+                        + ";\n"
+        );
         return result;
     }
 
@@ -1139,6 +1144,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + ";\n"
 
                 );
+                result.setAddress(
+                        tempVariablePrefix + tempIntGenerator.getCurrent()
+                );
             }
         }
         return result;
@@ -1320,6 +1328,11 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 + tempIntGenerator.getCurrent()
                 + " = "
                 + arrayAttributeContainer.getAddress()
+                + ";\n"
+        );
+
+        result.setAddress(
+                tempVariablePrefix + tempIntGenerator
         );
 
         return result;
@@ -1413,8 +1426,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + tempVariablePrefix
                         + tempIntGenerator.getCurrent()
                         + " = "
-                        + "!"
+                        + "(!"
                         + expressionAttributeContainer.getAddress()
+                        + ")"
                         + ";\n"
         );
         result.setJavaType("boolean");
@@ -1493,7 +1507,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + tempIntGenerator.getCurrent()
                         + " = "
                         + leftSideAttributeContainer.getAddress()
+                        + " "
                         + ctx.op.getText()
+                        + " "
                         + rightSideAttributeContainer.getAddress()
                         +";\n"
         );
