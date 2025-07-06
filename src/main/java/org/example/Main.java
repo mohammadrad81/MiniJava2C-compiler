@@ -17,11 +17,13 @@ public class Main {
         String program = """
 public class Main{
     public static void main(String[] args){
-        B b = new B();
-        b.hello();
+//        B b = new B();
+//        b.hello();
         
-//        C c = new C();
-//        c.hello();
+//        D d = new D();
+        C c = new C();
+//        c.hello(d);
+        A a = (A) c;
     }
 }
 
@@ -33,15 +35,19 @@ class A{
 }
 //
 class B extends A{
-    public int hello(){
-        System.out.println(2);
-    }
+//    public int hello(){
+//        System.out.println(2);
+//    }
 }
 //
 class C extends B{
-    public int hello(){
-        System.out.println(3);
+    public int hello(D d){
+        System.out.println(d.id);
     }
+}
+
+class D{
+    int id;
 }
 
 """;
