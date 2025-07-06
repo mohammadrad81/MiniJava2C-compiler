@@ -378,10 +378,10 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 + expressionAttributeContainer.getAddress()
                 + ") goto "
                 + loopEndLabel
-                + ";");
+                + ";\n");
 
         result.appendToCode(statementAttributeContainer.getCode());
-        result.appendToCode("goto " + loopStartLabel + ";");
+        result.appendToCode("goto " + loopStartLabel + ";\n");
 
         result.appendToCode(loopEndLabel
                 + ":\n");
@@ -441,7 +441,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         result.appendToCode(
                 "if (!"
                         + condition
-                        + ") goto"
+                        + ") goto "
                         + loopEndLabel
                         + ";\n"
         );
@@ -465,11 +465,14 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         if(loopLabels.empty()){
             errorHandler.error(ctx.start, "break statement must be in a loop");
         }
-        result.setCode(
-                "goto "
-                        + loopLabels.peek().getLoopEndLabel()
-                        + ";\n"
-        );
+        else{
+            result.setCode(
+                    "goto "
+                            + loopLabels.peek().getLoopEndLabel()
+                            + ";\n"
+            );
+        }
+
         return result;
     }
 
@@ -479,11 +482,14 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         if(loopLabels.empty()){
             errorHandler.error(ctx.start, "continue statement must be in a loop");
         }
-        result.setCode(
-                "goto "
-                + loopLabels.peek().getLoopStartLabel()
-                + ";\n"
-        );
+        else{
+            result.setCode(
+                    "goto "
+                            + loopLabels.peek().getLoopStartLabel()
+                            + ";\n"
+            );
+        }
+
         return result;
     }
 
@@ -620,6 +626,9 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 + " = "
                 + result.getAddress()
                 + ";\n"
+        );
+        result.setAddress(
+                tempVariablePrefix + tempIntGenerator.getCurrent()
         );
         return result;
     }
@@ -1656,7 +1665,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
 
         tempIntGenerator.generate();
         result.appendToCode(
-                "boolean "
+                "bool "
                         + tempVariablePrefix
                         + tempIntGenerator.getCurrent()
                         + " = "
@@ -1665,6 +1674,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + ctx.op.getText()
                         + " "
                         + rightAttributeContainer.getAddress()
+                        + ";\n"
         );
         result.setAddress(
                 tempVariablePrefix + tempIntGenerator.getCurrent()

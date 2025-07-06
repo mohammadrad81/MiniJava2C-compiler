@@ -5,7 +5,7 @@ public class LoopLabelTuple {
     private String loopEndLabel;
 
 
-    public LoopLabelTuple(String loopEndLabel, String loopStartLabel) {
+    public LoopLabelTuple(String loopStartLabel, String loopEndLabel) {
         this.loopEndLabel = loopEndLabel;
         this.loopStartLabel = loopStartLabel;
     }
