@@ -10,6 +10,7 @@ import org.example.MiniJavaAntlrImp.*;
 
 import java.util.Map;
 
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -17,39 +18,18 @@ public class Main {
         String program = """
 public class Main{
     public static void main(String[] args){
-//        B b = new B();
-//        b.hello();
-        
-//        D d = new D();
-        C c = new C();
-//        c.hello(d);
-        A a = (A) c;
+        A a = new A();
+        a.hello();
     }
 }
 
 class A{
     int x;
-    public int hello(){
+    public void hello(){
         System.out.println(1);
+        return;
     }
 }
-//
-class B extends A{
-//    public int hello(){
-//        System.out.println(2);
-//    }
-}
-//
-class C extends B{
-    public int hello(D d){
-        System.out.println(d.id);
-    }
-}
-
-class D{
-    int id;
-}
-
 """;
 
         ANTLRInputStream input = new ANTLRInputStream(program);

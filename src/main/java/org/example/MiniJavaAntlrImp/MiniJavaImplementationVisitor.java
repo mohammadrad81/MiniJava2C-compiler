@@ -517,7 +517,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             result.appendToCode("return " + expressionAttributeContainer.getAddress() + ";\n");
         }
         else{
-            errorHandler.error((Token) ctx.expression().getRuleContext(),
+            errorHandler.error(ctx.expression().start,
                     "must return an object of type: "
                             + currentMethod.getJavaType()
                             + " but returned an object of type: "
@@ -608,7 +608,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer result = new AttributeContainer();
         Resolvation<Symbol> resolvedVariable = resolveVariable(ID.getText());
         if(resolvedVariable == null) {
-            errorHandler.error((Token) ID, "variable " + ID.getText() + " not defined");
+            errorHandler.error(ID.getSymbol(), "variable " + ID.getText() + " not defined");
         }
         else{
             result.setJavaType(resolvedVariable.getSymbol().getJavaType());
@@ -1377,30 +1377,50 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 return result;
             }
             else{
-                tempIntGenerator.generate();
-                result.appendToCode(
-                        resolvedMethod.getSymbol().getcType()
-                                + tempVariablePrefix
-                                + tempIntGenerator.getCurrent()
-                                + " = "
-                                + methodHaverAttributeContainer.getAddress()
-                                + resolvedMethod.getAccessCode()
-                                + "("
-                                + methodHaverAttributeContainer.getAddress()
-                );
-                for(AttributeContainer argumentAttributeContainer: argumentListAttributeContainer.getArgumentList()){
+                if(resolvedMethod.getSymbol().getJavaType().equals("void")){
                     result.appendToCode(
-                            ", "
-                                    + argumentAttributeContainer.getAddress()
+                            methodHaverAttributeContainer.getAddress()
+                                    + resolvedMethod.getAccessCode()
+                                    + "("
+                                    + methodHaverAttributeContainer.getAddress()
+                    );
+                    for(AttributeContainer argumentAttributeContainer: argumentListAttributeContainer.getArgumentList()){
+                        result.appendToCode(
+                                ", "
+                                        + argumentAttributeContainer.getAddress()
+                        );
+                    }
+                    result.appendToCode(");\n");
+                    result.setJavaType("void");
+                    result.setcType("void");
+                }
+                else{
+                    tempIntGenerator.generate();
+                    result.appendToCode(
+                            resolvedMethod.getSymbol().getcType()
+                                    + tempVariablePrefix
+                                    + tempIntGenerator.getCurrent()
+                                    + " = "
+                                    + methodHaverAttributeContainer.getAddress()
+                                    + resolvedMethod.getAccessCode()
+                                    + "("
+                                    + methodHaverAttributeContainer.getAddress()
+                    );
+                    for(AttributeContainer argumentAttributeContainer: argumentListAttributeContainer.getArgumentList()){
+                        result.appendToCode(
+                                ", "
+                                        + argumentAttributeContainer.getAddress()
+                        );
+                    }
+                    result.appendToCode(");\n");
+                    result.setJavaType(resolvedMethod.getSymbol().getJavaType());
+                    result.setcType((resolvedMethod.getSymbol().getcType()));
+                    result.setAddress(
+                            tempVariablePrefix
+                                    + tempIntGenerator.getCurrent()
                     );
                 }
-                result.appendToCode(");\n");
-                result.setJavaType(resolvedMethod.getSymbol().getJavaType());
-                result.setcType((resolvedMethod.getSymbol().getcType()));
-                result.setAddress(
-                        tempVariablePrefix
-                                + tempIntGenerator.getCurrent()
-                );
+
             }
         }
         return result;

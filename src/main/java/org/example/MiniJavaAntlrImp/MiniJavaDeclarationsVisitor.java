@@ -208,6 +208,13 @@ struct int_array* new_int_array(int size){
                 returnCType,
                 parameterListAttributeContainer.getJavaTypeList()
         );
+        if(currentEnvironment.containsMethodSignature(methodSymbol.getSignature())){
+            errorHandler.error(ctx.start,
+                    "method with signature '"
+                                + methodSymbol.getSignature()
+                                + "' is already defined"
+            );
+        }
         currentEnvironment.putMethodSymbol(methodSymbol);
         int parameterListSize = parameterListAttributeContainer.getcTypeList().size();
         for(int i = 0; i < parameterListSize; i++){
