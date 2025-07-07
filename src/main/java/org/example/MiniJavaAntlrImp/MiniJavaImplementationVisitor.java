@@ -61,17 +61,20 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     private Resolvation<Symbol> resolveVariable(String variableName){
         Resolvation<Symbol> resolvation = null;
         boolean alreadyHitCurrentClass = false;
-        StringBuilder prefix = new StringBuilder();
-        Environment environment = null;
+        String prefix = "";
+        Environment environment;
         for(environment = currentEnvironment; environment != null; environment = environment.getParent()){
+            if(variableName == "size"){
+                System.out.println(currentEnvironment.getClassName());
+            }
             if(environment.isClassEnvironment()){
                 if(alreadyHitCurrentClass){ // searching in super classes
-                    prefix.append(superDot);
+                    prefix += superDot;
                 }
                 else{ // still in current class
                     if(environment.isClassEnvironment()){ // searching in current class fields
                         alreadyHitCurrentClass = true;
-                        prefix.append("caller_").append(currentClass).append("->");
+                        prefix += ("caller_") + (currentClass) + ("->");
                     }
                 }
             }
@@ -134,8 +137,11 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
     }
 
     private boolean doesExtend(String childClassName, String parentClassName){
-        Environment childEnvironment = this.classEnvironments.get(childClassName);
-        Environment parentEnvironment = this.classEnvironments.get(parentClassName);
+        Environment childEnvironment = this.classEnvironments.getOrDefault(childClassName, null);
+        Environment parentEnvironment = this.classEnvironments.getOrDefault(parentClassName, null);
+        if(childEnvironment == null || parentEnvironment == null){
+            return false;
+        }
         for(Environment environment = childEnvironment; environment != null; environment = environment.getParent()){
             if(environment == parentEnvironment){
                 return true;
@@ -331,28 +337,29 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer expressionAttributeContainer = visit(ctx.expression());
         AttributeContainer ifThenStatementAttributeContainer = visit(ctx.statement(0));
         if(!expressionAttributeContainer.getJavaType().equals("boolean")){
-            errorHandler.error((Token) ctx.expression().getRuleContext(), "if condition must be boolean");
+            errorHandler.error((Token) ctx.expression().start, "if condition must be boolean");
         }
+        int labelSuffix = ifIntGenerator.generate();
         result.setCode(expressionAttributeContainer.getCode());
         result.appendToCode(
                 "if(!"
                         + expressionAttributeContainer.getAddress()
                         + ") goto if_else_"
-                        + ifIntGenerator.generate()
+                        + labelSuffix
                         + ";\nif_then_"
-                        + ifIntGenerator.getCurrent()
+                        + labelSuffix
                         + ":\n"
         );
         result.appendToCode(ifThenStatementAttributeContainer.getCode());
-        result.appendToCode("goto if_end_" + ifIntGenerator.getCurrent() + ";\n");
-        result.appendToCode("if_else_" + ifIntGenerator.getCurrent() + ":\n");
+        result.appendToCode("goto if_end_" + labelSuffix + ";\n");
+        result.appendToCode("if_else_" + labelSuffix + ":\n");
         if(statementContexts.size() == 2){
             MiniJavaParser.StatementContext ifElseStatementContext = statementContexts.get(1);
             if(ifElseStatementContext != null){
                 AttributeContainer ifElseStatementAttributeContainer = visit(ifElseStatementContext);
                 result.appendToCode(ifElseStatementAttributeContainer.getCode());
             }
-            result.appendToCode("if_end:" + ifIntGenerator.getCurrent());
+            result.appendToCode("if_end_" + labelSuffix + ":\n");
         }
         return result;
     }
@@ -362,9 +369,8 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer result = new AttributeContainer();
         AttributeContainer expressionAttributeContainer = visit(ctx.expression());
         if(!expressionAttributeContainer.getJavaType().equals("boolean")){
-            errorHandler.error((Token) ctx.expression().getRuleContext(), "while condition must be boolean");
+            errorHandler.error(ctx.expression().start, "while condition must be boolean");
         }
-        result.appendToCode(expressionAttributeContainer.getCode());
         String loopStartLabel = "loop_start_" + whileIntGenerator.generate();
         String loopEndLabel = "loop_end_" + whileIntGenerator.getCurrent();
 
@@ -373,6 +379,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         loopLabels.pop();
 
         result.appendToCode(loopStartLabel + ":\n");
+        result.appendToCode(expressionAttributeContainer.getCode());
         result.appendToCode("if(!"
                 + expressionAttributeContainer.getAddress()
                 + ") goto "
@@ -392,7 +399,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer result = new AttributeContainer();
         AttributeContainer expressionAttributeContainer = visit(ctx.expression());
         if(!expressionAttributeContainer.getJavaType().equals("boolean")){
-            errorHandler.error((Token) ctx.expression().getRuleContext(), "do while condition must be boolean");
+            errorHandler.error((Token) ctx.expression().start, "do while condition must be boolean");
         }
         String loopStartLabel = "do_while_start_" + doWhileIntGenerator.generate();
         String loopEndLabel = "do_while_end_" + doWhileIntGenerator.getCurrent();
@@ -430,7 +437,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         if(ctx.expression() != null){
             AttributeContainer conditionAttributeContainer = visit(ctx.expression());
             if(!conditionAttributeContainer.getJavaType().equals("boolean")){
-                errorHandler.error((Token) ctx.expression().getRuleContext(), "for condition must be boolean");
+                errorHandler.error((Token) ctx.expression().start, "for condition must be boolean");
             }
             result.appendToCode(
                     conditionAttributeContainer.getCode()
@@ -513,7 +520,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer result = new AttributeContainer();
         AttributeContainer expressionAttributeContainer = visit(ctx.expression());
         if(currentMethod.getJavaType().equals(expressionAttributeContainer.getJavaType())){
-            result.appendToCode(expressionAttributeContainer.getMethodsCode());
+            result.appendToCode(expressionAttributeContainer.getCode());
             result.appendToCode("return " + expressionAttributeContainer.getAddress() + ";\n");
         }
         else{
@@ -533,7 +540,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer result = new AttributeContainer();
         AttributeContainer typeAttributeContainer = visit(ctx.type());
         if(currentEnvironment.containsSymbolName(ctx.ID().getText())){
-            errorHandler.error((Token) ctx.getRuleContext(), " variable " + ctx.ID().getText() + " already declared in this scope");
+            errorHandler.error((Token) ctx.start, " variable " + ctx.ID().getText() + " already declared in this scope");
         }
         else{
             currentEnvironment.putSymbol(
@@ -560,7 +567,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         AttributeContainer typeAttributeContainer = visit(ctx.type());
         AttributeContainer expressionAttributeContainer = visit(ctx.expression());
         if(currentEnvironment.containsSymbolName(ctx.ID().getText())){
-            errorHandler.error((Token) ctx.getRuleContext(), " variable " + ctx.ID().getText() + " already declared in this scope");
+            errorHandler.error((Token) ctx.start, " variable " + ctx.ID().getText() + " already declared in this scope");
         }
         else{
             currentEnvironment.putSymbol(
@@ -667,7 +674,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 }
             }
             result.appendToCode(
-                            ctx.ID().getText()
+                            resolvedVariable.getAccessCode()
                             + " = "
                             + cast
                             + expressionAttributeContainer.getAddress()
@@ -860,7 +867,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
             AttributeContainer parameterAttributeContainer = visit(parameterContext);
             String parameterAddress = parameterAttributeContainer.getAddress();
             if(result.getParameterList().contains(parameterAddress)){
-                errorHandler.error((ParserRuleContext) ctx.parameter(i).getRuleContext(), " repetitive parameter");
+                errorHandler.error((ParserRuleContext) ctx.parameter(i).start, " repetitive parameter");
             }
             result.getParameterList().add(parameterAttributeContainer.getAddress());
             result.getJavaTypeList().add(parameterAttributeContainer.getJavaType());
@@ -918,7 +925,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         }
         result.appendToCode(expressionAttributeContainer.getCode());
         result.appendToCode(
-                "printf(\"%d\", "
+                "printf(\"%d\\n\", "
                     + expressionAttributeContainer.getAddress()
                     + ");\n"
         );
@@ -1074,7 +1081,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                         + tempIntGenerator.getCurrent()
                         + " = "
                         + "new_"
-                        + currentClass
+                        + ctx.ID().getText()
                         + "();\n"
         );
         result.setAddress(
@@ -1190,7 +1197,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         ){
             Resolvation<Symbol> resolvedField = resolveField(ctx.ID().getText(), fieldHaverAttributeContainer.getJavaType());
             if(resolvedField == null){
-                errorHandler.error((Token) ctx.ID(),
+                errorHandler.error(ctx.ID().getSymbol(),
                         "objects of type "
                                 + fieldHaverAttributeContainer.getJavaType()
                                 + " do not have field "
@@ -1398,6 +1405,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                     tempIntGenerator.generate();
                     result.appendToCode(
                             resolvedMethod.getSymbol().getcType()
+                                    + " "
                                     + tempVariablePrefix
                                     + tempIntGenerator.getCurrent()
                                     + " = "
@@ -1684,8 +1692,8 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
         else{ // == or !=
             if(
                     (!leftAttributeContainer.getJavaType().equals(rightAttributeContainer.getJavaType())) &&
-                            (!leftAttributeContainer.getJavaType().equals("null")) &&
-                            (!rightAttributeContainer.getJavaType().equals("null")) &&
+                            (!(leftAttributeContainer.getJavaType().equals("null") && rightAttributeContainer.isObject())) &&
+                            (!(rightAttributeContainer.getJavaType().equals("null") && leftAttributeContainer.isObject())) &&
                             (!doesExtend(rightAttributeContainer.getJavaType(), leftAttributeContainer.getJavaType())) &&
                             (!doesExtend(leftAttributeContainer.getJavaType(), rightAttributeContainer.getJavaType()))
             ){
@@ -1728,7 +1736,7 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 + currentClass
                 + "* "
                 + tempVariablePrefix
-                + tempIntGenerator
+                + tempIntGenerator.getCurrent()
                 + " = "
                 + "caller_"
                 + currentClass

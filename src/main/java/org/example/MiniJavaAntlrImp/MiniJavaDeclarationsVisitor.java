@@ -38,7 +38,7 @@ public class MiniJavaDeclarationsVisitor extends MiniJavaBaseVisitor<AttributeCo
 struct int_array {
     int length;
     int* data;
-}
+};
     
 struct int_array* new_int_array(int size){
     struct int_array* array = (struct int_array*) malloc(sizeof(struct int_array));
@@ -96,9 +96,8 @@ struct int_array* new_int_array(int size){
             superFieldText = "\nstruct " + ctx.superClass.getText() + " super;";
         }
         currentClass = ctx.className.getText();
-        Environment currentClassEnvironment = classEnvironments.get(currentClass);
-        currentEnvironment = currentClassEnvironment;
-        classEnvironments.put(ctx.className.getText(), currentClassEnvironment);
+        currentEnvironment = classEnvironments.get(currentClass);
+//        classEnvironments.put(ctx.className.getText(), currentClassEnvironment);
 
         result.setStructDefinitionCode(
                 "struct "
@@ -110,7 +109,7 @@ struct int_array* new_int_array(int size){
         AttributeContainer classBodyAttributeContainer = visit(ctx.classBody());
         result.appendToStructDefinitionCode(
                 classBodyAttributeContainer.getStructDefinitionCode()
-                +"}\n"
+                +"};\n"
         );
         result.setMethodsCode(
                 classBodyAttributeContainer.getMethodsCode()
@@ -119,6 +118,7 @@ struct int_array* new_int_array(int size){
         result.setConstructorsCode(
                 classBodyAttributeContainer.getConstructorsCode()
         );
+
         return result;
     }
 

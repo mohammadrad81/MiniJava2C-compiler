@@ -56,10 +56,12 @@ public class MiniJavaClassEnvironmentVisitor extends MiniJavaBaseVisitor<Void> {
 
     @Override
     public Void visitClassDeclar(MiniJavaParser.ClassDeclarContext ctx) {
+//        System.out.println("====== " + ctx.className.getText());
         if(ctx.superClass == null){
             this.hierarchy.insertNode(ctx.className.getText());
         }
         else{
+//            System.out.println(" -> " + ctx.superClass.getText());
             if(hierarchy.getNodes().contains(ctx.className.getText())){
                 errorHandler.error(ctx.className, "duplicated class declaration: " + ctx.className.getText());
             }
