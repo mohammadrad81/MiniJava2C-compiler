@@ -1173,7 +1173,8 @@ public class MiniJavaImplementationVisitor extends MiniJavaBaseVisitor<Attribute
                 result.setcType("int");
                 tempIntGenerator.generate();
                 result.appendToCode(
-                        tempVariablePrefix
+                        "int "
+                        + tempVariablePrefix
                         + tempIntGenerator.getCurrent()
                         + " = "
                         + fieldHaverAttributeContainer.getAddress()
